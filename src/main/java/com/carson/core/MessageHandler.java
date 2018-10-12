@@ -1,4 +1,4 @@
-package com.carson;
+package com.carson.core;
 
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;

@@ -1,22 +1,38 @@
-package com.carson;
+package com.carson.core;
 
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Handler extends MessageHandler {
     public Handler(IDiscordClient client) {
         super(client);
+        init();
     }
 
     @Override
     public void onMessage(MessageReceivedEvent event) {
         log(event);
+        for(Command command : commands){
+            if(command.test(event)){
+                System.out.println("running");
+                command.run(event);
+                return;
+            }
+        }
     }
 
+    List<Command> commands = new ArrayList<>();
 
+    public void init(){
+        for(CommandCollection collection : Main.collectionList){
+            commands.addAll(collection.getCommands(this));
+        }
+    }
 
 
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
