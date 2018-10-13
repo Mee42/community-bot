@@ -18,14 +18,14 @@ Because of the many commands needed to use git, this tutorial will be structured
 More information about the above command
 
 #### So here we go:
-`cd *path to place you want to keep files`  :  move into a different working directory
+`cd *path to place you want to keep files*`  :  move into a different working directory
 
 `git clone https://github.com/mee42/community-bot.git`  :  Clone the entire git repo down onto your disk
 
 `cd community-bot`  :  move into the cloned directory, all git commands must be run from here
 
 `git checkout -b *branch name*`  :  Create a new branch and move into it. This is the branch you will do all of your work<br>
-**Note: the default branch is called `Master`. Never, ever work on `master`**
+**Note: the default branch is called `Master`. Never, ever, work on `master`**
 
 Here is where you will start coding. Every time you finish a block of code (like, a command), follow the below steps and commit.
 This creates a sort of "checkpoint". For more information on how often you should commit, read 
@@ -34,6 +34,7 @@ This creates a sort of "checkpoint". For more information on how often you shoul
 
 To commit:<br>
 `git add --all`  :   adds all files to git. Prevents missing code<br>
+Always run this before running `git commit`<br>
 `git commit -m '*informative, short, description of what you did*'`  :  Stores all changes in a commit. 
 You need 'single quotes' around the message
 
@@ -44,7 +45,7 @@ After doing that, go to the github website and make a pull request from `branch 
 and shoot me a DM so I know about it sooner. 
 I will then look over your code to make sure it's good. If it's not, I'll deny your request and show you where you can improve.
 Once I approve your pull request, I'll delete your branch from github. You should also delete it from your personal computer with:<br>
-`git checkout master`  :  switch back to master
+`git checkout master`  :  switch back to master<br>
 `git branch -d *branch name*`  :  delete branch `*branch name*`
 
 You should make a new branch if you want to do further work.
