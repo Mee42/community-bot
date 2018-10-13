@@ -50,13 +50,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="java" value="5174" />
-          <entry key="md" value="11448" />
+          <entry key="md" value="12652" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="5196" />
-          <entry key="Markdown" value="11426" />
+          <entry key="Markdown" value="12630" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -105,8 +105,8 @@
         <entry file="file://$PROJECT_DIR$/GIT.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="643">
-                <caret line="41" column="122" selection-start-line="41" selection-start-column="122" selection-end-line="41" selection-end-column="122" />
+              <first_editor relative-caret-position="677">
+                <caret line="54" column="128" selection-start-line="54" selection-start-column="128" selection-end-line="54" selection-end-column="128" />
               </first_editor>
               <second_editor />
             </state>
@@ -745,7 +745,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12230000" />
+    <option name="totallyTimeSpent" value="12945000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -957,8 +957,8 @@
     <entry file="file://$PROJECT_DIR$/GIT.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="643">
-            <caret line="41" column="122" selection-start-line="41" selection-start-column="122" selection-end-line="41" selection-end-column="122" />
+          <first_editor relative-caret-position="677">
+            <caret line="54" column="128" selection-start-line="54" selection-start-column="128" selection-end-line="54" selection-end-column="128" />
           </first_editor>
           <second_editor />
         </state>
