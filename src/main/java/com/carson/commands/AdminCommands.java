@@ -17,12 +17,6 @@ public class AdminCommands extends CommandCollection {
 
     @Override
     public void genCommands(List<Command> commands, Handler handler) {
-        commands.add(toCommand(Test.startsWith("ping"), event -> handler.sendMessage(event,"pong")));
-        commands.add(toCommand(event -> {
-            if(event.getAuthor().getLongID() == 293853365891235841L){
-                return false;
-            }
-            return Test.startsWith("shutdown").test(event);
-        }, event -> System.exit(0)));
+        commands.add(toCommand(Test.startsWith("ping"), event -> handler.sendMessage(event,"pong-1")));
     }
 }
