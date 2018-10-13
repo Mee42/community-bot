@@ -52,11 +52,17 @@ You should make a new branch if you want to do further work.
 
 If you wish to collaborate with someone on something, come *talk to me*. I can help you set stuff up so you and your friends can collaborate on one branch.
 
+If you want to improve anything on this repo, go through the same process. This keeps the `Master` branch clean and operational.
+
+### Typo fixing
+###### Because typos are common, there is a continually running branch for fixing them
 If you want to fix a typo, you can work on the `typo` branch.
 follow somewhat of the same method:<br>
 `git checkout type`  :  switch to the `typo` branch<br>
-`git pull`  :  pull the latest changes from Github
+`git pull`  :  pull the latest changes from Github<br>
+**If, at this point, `master` is ahead of `typo`, run this**<br>
+`git fetch master`  :  make sure the local `master` branch is up-to-date<br>
+`git merge master --no-ff`  :  merge changes from `master` into `typo`. It may open up a text editor, if it does just `save` and `close`<br>
 
-
-If you want to improve anything on this repo, go through the same process. This keeps the `Master` branch clean and operational.
-
+Now you can make your changes. Once you're done, go through the commit process and push to origin with `git push origin typo`.<br>
+Then, create a pull request. 
