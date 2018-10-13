@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b1a31888-6ad3-4b08-bb23-a0289ef9f4f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/carson/commands/TestCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/carson/commands/TestCommands.java" afterDir="false" />
-    </list>
+    <list default="true" id="b1a31888-6ad3-4b08-bb23-a0289ef9f4f5" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -52,13 +47,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="java" value="5174" />
-          <entry key="md" value="6373" />
+          <entry key="md" value="6577" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="5196" />
-          <entry key="Markdown" value="6351" />
+          <entry key="Markdown" value="6555" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -73,13 +68,33 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="982">
-                <caret line="157" column="68" selection-start-line="157" selection-start-column="68" selection-end-line="157" selection-end-column="68" />
+              <first_editor relative-caret-position="388">
+                <caret line="135" column="46" selection-start-line="135" selection-start-column="46" selection-end-line="135" selection-end-column="46" />
                 <folding>
+                  <element signature="e#649#854#0" />
                   <element signature="imports" expanded="true" />
+                  <element signature="e#974#1034#0" />
+                  <element signature="e#1265#1359#0" />
+                  <element signature="e#1507#1889#0" />
                   <element signature="imports" expanded="true" />
                   <element signature="e#237#238#0" expanded="true" />
                   <element signature="e#271#272#0" expanded="true" />
+                  <element signature="method#genCommands#0;class#TestCommands#0" />
+                  <element signature="e#2032#2108#0" />
+                  <element signature="e#2161#2244#0" />
+                  <element signature="e#2339#2513#0" />
+                  <element signature="e#2650#2744#0" />
+                  <element signature="e#2837#2936#0" />
+                  <element signature="e#2937#3164#0" />
+                  <element signature="e#3165#3520#0" />
+                  <element signature="e#3521#3718#0" />
+                  <element signature="e#3828#3873#0" />
+                  <element signature="e#3930#4008#0" />
+                  <element signature="e#4168#4369#0" />
+                  <element signature="e#4680#4830#0" />
+                  <element signature="e#5023#5089#0" />
+                  <element signature="e#5089#5285#0" />
+                  <element signature="e#5287#5497#0" />
                 </folding>
               </first_editor>
               <second_editor />
@@ -730,12 +745,12 @@
       <workItem from="1539327168062" duration="1082000" />
       <workItem from="1539365520441" duration="4000" />
       <workItem from="1539366354854" duration="3795000" />
-      <workItem from="1539412789657" duration="2863000" />
+      <workItem from="1539412789657" duration="3106000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7744000" />
+    <option name="totallyTimeSpent" value="7987000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -748,7 +763,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1679" y="-1" width="1922" height="1191" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -763,7 +777,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32902032" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3293247" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.3293247" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50053304" side_tool="true" weight="0.32952183" />
       <window_info anchor="bottom" id="Version Control" order="10" />
       <window_info anchor="bottom" id="Build" order="11" weight="0.32952183" />
@@ -914,13 +928,33 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="982">
-            <caret line="157" column="68" selection-start-line="157" selection-start-column="68" selection-end-line="157" selection-end-column="68" />
+          <first_editor relative-caret-position="388">
+            <caret line="135" column="46" selection-start-line="135" selection-start-column="46" selection-end-line="135" selection-end-column="46" />
             <folding>
+              <element signature="e#649#854#0" />
               <element signature="imports" expanded="true" />
+              <element signature="e#974#1034#0" />
+              <element signature="e#1265#1359#0" />
+              <element signature="e#1507#1889#0" />
               <element signature="imports" expanded="true" />
               <element signature="e#237#238#0" expanded="true" />
               <element signature="e#271#272#0" expanded="true" />
+              <element signature="method#genCommands#0;class#TestCommands#0" />
+              <element signature="e#2032#2108#0" />
+              <element signature="e#2161#2244#0" />
+              <element signature="e#2339#2513#0" />
+              <element signature="e#2650#2744#0" />
+              <element signature="e#2837#2936#0" />
+              <element signature="e#2937#3164#0" />
+              <element signature="e#3165#3520#0" />
+              <element signature="e#3521#3718#0" />
+              <element signature="e#3828#3873#0" />
+              <element signature="e#3930#4008#0" />
+              <element signature="e#4168#4369#0" />
+              <element signature="e#4680#4830#0" />
+              <element signature="e#5023#5089#0" />
+              <element signature="e#5089#5285#0" />
+              <element signature="e#5287#5497#0" />
             </folding>
           </first_editor>
           <second_editor />
