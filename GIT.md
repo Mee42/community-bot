@@ -46,11 +46,17 @@ and shoot me a DM so I know about it sooner.
 I will then look over your code to make sure it's good. If it's not, I'll deny your request and show you where you can improve.
 Once I approve your pull request, I'll delete your branch from github. You should also delete it from your personal computer with:<br>
 `git checkout master`  :  switch back to master<br>
-`git branch -d *branch name*`  :  delete branch `*branch name*`
+`git branch -D *branch name*`  :  delete branch `*branch name*`
 
 You should make a new branch if you want to do further work.
 
 If you wish to collaborate with someone on something, come *talk to me*. I can help you set stuff up so you and your friends can collaborate on one branch.
+
+If you want to fix a typo, you can work on the `typo` branch.
+follow somewhat of the same method:<br>
+`git checkout type`  :  switch to the `typo` branch<br>
+`git pull`  :  pull the latest changes from Github
+
 
 If you want to improve anything on this repo, go through the same process. This keeps the `Master` branch clean and operational.
 
