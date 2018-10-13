@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b1a31888-6ad3-4b08-bb23-a0289ef9f4f5" name="Default Changelist" comment="" />
+    <list default="true" id="b1a31888-6ad3-4b08-bb23-a0289ef9f4f5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/GIT.md" beforeDir="false" afterPath="$PROJECT_DIR$/GIT.md" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -48,13 +50,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="java" value="5174" />
-          <entry key="md" value="11172" />
+          <entry key="md" value="11448" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="5196" />
-          <entry key="Markdown" value="11150" />
+          <entry key="Markdown" value="11426" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -103,8 +105,8 @@
         <entry file="file://$PROJECT_DIR$/GIT.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="17">
-                <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+              <first_editor relative-caret-position="643">
+                <caret line="41" column="122" selection-start-line="41" selection-start-column="122" selection-end-line="41" selection-end-column="122" />
               </first_editor>
               <second_editor />
             </state>
@@ -738,12 +740,12 @@
       <workItem from="1539365520441" duration="4000" />
       <workItem from="1539366354854" duration="3795000" />
       <workItem from="1539412789657" duration="3551000" />
-      <workItem from="1539432274829" duration="3158000" />
+      <workItem from="1539432274829" duration="3798000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11590000" />
+    <option name="totallyTimeSpent" value="12230000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -756,6 +758,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1680" y="0" width="1914" height="1175" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -770,7 +773,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32902032" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.3286385" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3286385" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50053304" side_tool="true" weight="0.32952183" />
       <window_info anchor="bottom" id="Version Control" order="10" />
       <window_info anchor="bottom" id="Build" order="11" weight="0.32952183" />
@@ -954,8 +957,8 @@
     <entry file="file://$PROJECT_DIR$/GIT.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="17">
-            <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+          <first_editor relative-caret-position="643">
+            <caret line="41" column="122" selection-start-line="41" selection-start-column="122" selection-end-line="41" selection-end-column="122" />
           </first_editor>
           <second_editor />
         </state>

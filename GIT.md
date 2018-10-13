@@ -4,11 +4,12 @@
 
 The instructions here are for the command line, but either one works.
 
-Download and install git. 
+Download and install git [here](https://git-scm.com/downloads). Be sure to download the `Windows` version
 
+To start using git, open git bash.
 
-to start using git, open git bash. <br>
-**NOTE: on Windows, dashes `-` may be replaced by slashes `/`, so `git commit -m 'asdf'` MIGHT BECOME `git commit /m 'asdf'`. This might not be the case
+**NOTE: on Windows, hyphens `-` may be replaced by slashes `/`, 
+so `git commit -m 'asdf'` MIGHT BECOME `git commit /m 'asdf'`.** This might not be the case, but if hyphens aren't working, it's worth a try
 
 //REWRITE
 Because of the many commands needed to use git, this tutorial will be structured like this:
@@ -24,10 +25,10 @@ More information about the above command
 
 `cd community-bot`  :  move into the cloned directory, all git commands must be run from here
 
-`git checkout -b *branch name*`  :  Create a new branch and move into it. This is the branch you will do all of your work
-<br>**Note: the default branch is called `Master`. Never, ever work on `master`**
+`git checkout -b *branch name*`  :  Create a new branch and move into it. This is the branch you will do all of your work<br>
+**Note: the default branch is called `Master`. Never, ever work on `master`**
 
-Here is where you will start coding. Every time you finish a block of code (like, a commmand), follow the below steps and commit.
+Here is where you will start coding. Every time you finish a block of code (like, a command), follow the below steps and commit.
 This creates a sort of "checkpoint". For more information on how often you should commit, read 
 [this](https://stackoverflow.com/questions/107264/how-often-to-commit-changes-to-source-control). 
 <br>Just remember, **Don't commit code that doesn't actually work**.
