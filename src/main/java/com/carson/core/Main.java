@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static final String PREFIX = "@";
+    public static final String PREFIX = "!";
     public static void main(String[] args)  {
         final IDiscordClient client = Utils.buildClient();
         Handler handler = new Handler(client);
