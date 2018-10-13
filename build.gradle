@@ -1,9 +1,9 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'java'
 }
 
-group 'Procord'
-version '1.0-SNAPSHOT'
+version '1'
 
 sourceCompatibility = 1.8
 
@@ -24,8 +24,8 @@ dependencies {
 
 }
 
-//jar {
-//    manifest {
-//        attributes 'Main-Class': 'com.carson.Main'
-//    }
-//}
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.carson.core.Main'
+    }
+}
