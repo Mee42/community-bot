@@ -42,6 +42,10 @@ Once Development is done, you need to push the branch to Github.<br>
 `git push origin *branch name*`  :  Effectively "upload" your code on branch `branch name` to the `branch name` on Github.
 
 After doing that, go to the github website and make a pull request from `branch name` to `master`,
+
+Make sure the arrow is pointing from `*branch name*` to `master`
+
+
 and shoot me a DM so I know about it sooner. 
 I will then look over your code to make sure it's good. If it's not, I'll deny your request and show you where you can improve.
 Once I approve your pull request, I'll delete your branch from github. You should also delete it from your personal computer with:<br>
