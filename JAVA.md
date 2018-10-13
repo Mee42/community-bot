@@ -88,14 +88,14 @@ Test.startsWith("ping")//Don't put the prefix here, it will automatically be add
 ```
 And this will replace the `event -> {/*testing code*/}` segment, so it will look like this:
 ```java
-toCommand(Test.startsWith("ping"), (MessageReceivedEvent event) -> {
+toCommand(Test.startsWith("ping"), event -> {
    //run code 
 });
 ```
 Now for the run code. You have two objects you can use - `event` and `handler`. `handler` is what you will use to send messages, and
 `event` contains all of the message information. Some standard `event` methods are shown here.
 ```java
-toCommand(Test.startsWith("ping"), (MessageReceivedEvent event) -> {
+toCommand(Test.startsWith("ping"), event -> {
     //run code
     String content = event.getMessage().getContent();
     long message_id = event.getMessageID();
@@ -136,7 +136,7 @@ commands.add(
 ```
 Now there's only one more line of code you need to write - adding your Command Collection to the global register.
 
-Go to the file [com.carson.core.Main](Main.java) and find this static block:
+Go to the file [com.carson.core.Main](src/main/java/com/carson/core/Main.java) and find this static block:
 ```java
 static{
     collectionList.add(new TestCommands());
