@@ -1,27 +1,12 @@
 ##Git
-Git is an extremely powerful tool that we will be using to manage this bot. You can use the command line, or a GUI. 
+#####Git is an extremely powerful tool that we will be using to manage this bot. You can use the command line, or a GUI. 
 The instructions here are for the command line, but either one works.
 
 Download and install git. 
 
 
-to start using git, open git bash and navigate to the directory you want to keep files in.
-
-Run `git clone https://github.com/mee42/community-bot.git` 
-This and then `cd community-bot` to move into the directory. 
-Run `git checkout -b *branch name*`. Name the branch something related to what you are working on
- 
- 
-Write and test code. r
-Run `git add --all` and `git commit -m 'descriptive message'` to store all changes
-
-run `git push origin branch name` to upload your branch to the github. 
-Do NOT push to master
-
-after doing that, go to the github website and make a pull request from your branch to master
-I'll review it, and if it looks good, I'll approve it, rebuild the bot, and restart it. 
-New code will be running within 10 minutes of me approving it
-
+to start using git, open git bash. <br>
+**NOTE: on Windows, dashes `-` may be replaced by slashes `/`, so `git commit -m 'asdf'` MIGHT BECOME `git commit /m 'asdf'`. This might not be the case
 
 //REWRITE
 Because of the many commands needed to use git, this tutorial will be structured like this:
@@ -29,7 +14,6 @@ Because of the many commands needed to use git, this tutorial will be structured
 `command *argument*`  :   reasoning
 
 More information about the above command
-
 
 ####So here we go:
 `cd *path to place you want to keep files`  :  move into a different working directory
