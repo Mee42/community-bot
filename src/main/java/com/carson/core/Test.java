@@ -7,5 +7,4 @@ public interface Test {
     static Test startsWith(final String str){
         return (event) -> event.getMessage().getContent().startsWith(Main.PREFIX + str);
     }
-
 }

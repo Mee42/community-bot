@@ -19,7 +19,7 @@ public class Handler extends MessageHandler {
         log(event);
         for(Command command : commands){
             if(command.test(event)){
-                System.out.println("running");
+                System.out.println("running command (" + command.toString() + ")");
                 command.run(event);
                 return;
             }
