@@ -30,4 +30,10 @@ public abstract class Command {
     public boolean test(MessageReceivedEvent event){
         return test.test(event);
     }
+
+
+    @Override
+    public String toString(){
+        return collection + " - " + author;
+    }
 }
