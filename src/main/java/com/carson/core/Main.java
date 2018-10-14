@@ -12,13 +12,9 @@ public class Main {
         final IDiscordClient client = Utils.buildClient();
         Handler handler = new Handler(client);
         Utils.registerListener(client,handler);
-        initCommmands(handler);
         client.login();
     }
 
-    private static void initCommmands(Handler handler) {
-//        test(Command.from(Test.startsWith("ping"),event -> handler.sendMessage(event,"pong"));
-    }
 
     public static final List<CommandCollection> collectionList = new ArrayList<>();
     static{
