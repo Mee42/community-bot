@@ -12,11 +12,15 @@ public class AdminCommands extends CommandCollection {
         super("Carson");
     }
 
-
+    private static final long startTime = System.currentTimeMillis();
 
 
     @Override
     public void genCommands(List<Command> commands, Handler handler) {
-        commands.add(toCommand(Test.startsWith("ping"), event -> handler.sendMessage(event,"pong-1")));
+        commands.add(toCommand(Test.startsWith("ping"), event -> handler.sendMessage(event,"pong")));
+        commands.add(toCommand(Test.startsWith("status"), event -> handler.sendMessage(event, "uptime:" + (System.currentTimeMillis() - startTime)/1000 + " Seconds, " +
+                (System.currentTimeMillis() - startTime)/60000 + " Hours\n" +
+                "Guilds:" + event.getClient().getGuilds().size() + "\n" +
+                "Users in this Guild" + event.getGuild().getTotalMemberCount())));
     }
 }
