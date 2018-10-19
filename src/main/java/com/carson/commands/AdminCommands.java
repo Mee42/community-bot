@@ -43,7 +43,7 @@ public class AdminCommands extends CommandCollection {
             int userCount = users.size();
             handler.sendMessage(event, "uptime: `" +
                     (System.currentTimeMillis() - startTime)/1000 + "` Seconds, `" +
-                    (System.currentTimeMillis() - startTime)/60000 + "` Hours\n" +
+                    (System.currentTimeMillis() - startTime)/60_000/60 + "` Hours\n" +
                     "Guilds: `" + event.getClient().getGuilds().size() + "`\n" +
                     "Users in this Guild: `" + event.getGuild().getTotalMemberCount() + "`\n" +
                     "Users under this bot: `" + userCount + "`\n" +
