@@ -1,6 +1,7 @@
 package com.carson.core;
 
 import com.carson.commands.AdminCommands;
+import com.carson.commands.KotlinCommands;
 import sx.blah.discord.api.IDiscordClient;
 
 import java.util.ArrayList;
@@ -19,5 +20,6 @@ public class Main {
     public static final List<CommandCollection> collectionList = new ArrayList<>();
     static{
         collectionList.add(new AdminCommands());
+        collectionList.add(new KotlinCommands());
     }
 }
