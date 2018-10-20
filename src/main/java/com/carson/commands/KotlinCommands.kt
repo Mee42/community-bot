@@ -27,7 +27,7 @@ class KotlinCommands() : CommandCollection("Carson") {
             }
             if(split.size == 0 || split.size == 1){
                 handle.sendMessage(it, "not enough answers")
-                return@CommandLambda~
+                return@CommandLambda
             }
 
             val arr = "abcdefghijklmnopqrstuvwxyz".toCharArray()
