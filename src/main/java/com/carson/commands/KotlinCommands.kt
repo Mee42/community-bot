@@ -51,18 +51,14 @@ class KotlinCommands() : CommandCollection("Carson") {
 //        commands.add(toCommand(Test {
 //            var arr = it.message.mentions
 //            if(arr.size != 0)
-//                return@Test
-//            return arr.get(0).
+//                return@Test false
+//            return@Test arr[0] == it.client.ourUser
 //        }, CommandLambda {
-
+//
 //        }))
     }
     companion object {
-        var emojis =  mutableMapOf<String,String>()
-        val arr = "abcdefghijklmnopqrstuvwxyz".toCharArray()
-        init {
-            for((index, c) in ('\uDDE6'..'\uDDFF').withIndex())
-                emojis["${arr[index]}"] = "\uD83C$c"
-        }
+        val arr = "abcdefghijklmnopqrstufvwxyz".toCharArray()
+        val emojis =  arr.mapIndexed {  index, c -> "$c" to "\uD83C${'\uDDE6' + index}"}.toMap()
     }
 }
