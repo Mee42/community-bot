@@ -27,7 +27,7 @@ public class Handler extends MessageHandler {
                     return;
                 }
             }
-        }
+        });
     }
 
     List<Command> commands = new ArrayList<>();
