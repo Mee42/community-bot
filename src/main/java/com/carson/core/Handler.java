@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class Handler extends MessageHandler {
     public Handler(IDiscordClient client) {
@@ -16,12 +18,14 @@ public class Handler extends MessageHandler {
 
     @Override
     public void onMessage(MessageReceivedEvent event) {
-        log(event);
-        for(Command command : commands){
-            if(command.test(event)){
-                System.out.println("running command (" + command.toString() + ")");
-                command.run(event);
-                return;
+        Executors.newSingleThreadExecutor().execute(() -> {
+            log(event);
+            for (Command command : commands) {
+                if (command.test(event)) {
+                    System.out.println("running command (" + command.toString() + ")");
+                    command.run(event);
+                    return;
+                }
             }
         }
     }
