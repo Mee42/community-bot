@@ -45,11 +45,6 @@ class KotlinCommands() : CommandCollection("Carson") {
             val messageSent = handle.sendMessageAndGet(it.channel, message)
             for (key in map.keys) {
                 val unicode = emojis[key]
-                if (unicode == null)
-                    println("Emoji $key is null $unicode")
-                else
-                    println("unicode value for key $key is $unicode")
-
                 RequestBuffer.request { messageSent.addReaction(ReactionEmoji.of(unicode)) }.get()
             }
 
@@ -58,36 +53,9 @@ class KotlinCommands() : CommandCollection("Carson") {
     companion object {
         var emojis = HashMap<String, String>()
         init {
-            val map = HashMap<String, String>()
-            map["a"] = "\uD83C\uDDE6"
-            map["b"] = "\uD83C\uDDE7"
-            map["c"] = "\uD83C\uDDE8"
-            map["d"] = "\uD83C\uDDE9"
-            map["e"] = "\uD83C\uDDEA"
-            map["f"] = "\uD83C\uDDEB"
-            map["g"] = "\uD83C\uDDEC"
-            map["h"] = "\uD83C\uDDED"
-            map["i"] = "\uD83C\uDDEE"
-            map["j"] = "\uD83C\uDDEF"
-            map["k"] = "\uD83C\uDDF0"
-            map["l"] = "\uD83C\uDDF1"
-            map["m"] = "\uD83C\uDDf2"
-            map["n"] = "\uD83C\uDDF3"
-            map["o"] = "\uD83C\uDDF4"
-            map["p"] = "\uD83C\uDDF5"
-            map["q"] = "\uD83C\uDDF6"
-            map["r"] = "\uD83C\uDDF7"
-            map["s"] = "\uD83C\uDDF8"
-            map["t"] = "\uD83C\uDDF9"
-            map["u"] = "\uD83C\uDDFA"
-            map["v"] = "\uD83C\uDDFB"
-            map["w"] = "\uD83C\uDDFC"
-            map["x"] = "\uD83C\uDDFD"
-            map["y"] = "\uD83C\uDDFE"
-            map["z"] = "\uD83C\uDDFF"
-            for((key,value) in map){
-                emojis[":regional_indicator_$key:"] = value
-            }
+            val arr = "abcdefghijklmnopqrstuvwxyz".toCharArray()
+            for((index, c) in ('\uDDE6'..'\uDDFF').withIndex())
+                emojis[":regional_indicator_${arr[index]}:"] = "\uD83C$c"
         }
     }
 }
