@@ -1,8 +1,13 @@
 package com.carson.commands
 
 import com.carson.core.*
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent
 import sx.blah.discord.util.RequestBuffer
 import sx.blah.discord.handle.impl.obj.ReactionEmoji
+import sx.blah.discord.handle.obj.IGuild
+import sx.blah.discord.handle.obj.IMessage
+import sx.blah.discord.handle.obj.IUser
+import sx.blah.discord.handle.obj.Permissions
 
 
 class KotlinCommands() : CommandCollection("Carson") {
@@ -65,7 +70,26 @@ class KotlinCommands() : CommandCollection("Carson") {
                     "https://github.com/Mee42/community-bot/wiki\n" +
                     "You can write both Java and Pesudo code, allowing everyone to contribute.")
         }))
+
+
+        commands.add(toCommand(Test.startsWith("mc"), CommandLambda {
+            var users = it.guild.users.map { user -> Pair(user, getName(user,it.guild))}.toMap().filter { (_,value) -> !value.replace("[","").toLowerCase().startsWith("mc")}
+
+            users = users.map { (key,value) -> Pair(key,"Mc$value") }.toMap()
+
+            val str = users.toList().fold("") { all, pair -> "$all\n${getName(pair.first,it.guild)} : ${pair.second}"}.trim()
+
+            val message = handle.sendMessageAndGet(it.channel, "I will change these nicknames:\n```\n$str\n```\nHave an admin react :+1: to approve")
+            message.addReaction(ReactionEmoji.of("\uD83D\uDC4D"))
+            val reactionEvent = it.client.dispatcher.waitFor<ReactionEvent> { mes -> mes.message == it.message && mes.user.getPermissionsForGuild(it.guild).contains(Permissions.ADMINISTRATOR) }
+            handle.sendMessage(it,reactionEvent.user.mention() + " has approved changes. Making changes now")
+        }))
+
+
     }
+
+    fun getName(user : IUser, guild : IGuild) : String = if (user.getNicknameForGuild(guild)?: "null" == "null") user.name else user.getNicknameForGuild(guild)
+
     companion object {
         val arr = "abcdefghijklmnopqrstufvwxyz".toCharArray()
         val emojis =  arr.mapIndexed {  index, c -> "$c" to "\uD83C${'\uDDE6' + index}"}.toMap()
