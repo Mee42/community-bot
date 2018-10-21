@@ -30,32 +30,39 @@ class KotlinCommands() : CommandCollection("Carson") {
                 return@CommandLambda
             }
 
-            val arr = "abcdefghijklmnopqrstuvwxyz".toCharArray()
-            if (split.size > arr.size) {
+            if (split.size > emojis.size) {
                 handle.sendMessage(it, "To many options")
                 return@CommandLambda
             }
-
             var index = 0
-            val map = split.associate { Pair(":regional_indicator_${arr[index++]}:", it) }
+            val map = split.associate { Pair((emojis["${arr[index++]}"]), it) }//generate an array
             var message = "$question\nOptions:\n"
             for ((key, value) in map) {
                 message += "$key : $value\n"
             }
             val messageSent = handle.sendMessageAndGet(it.channel, message)
-            for (key in map.keys) {
-                val unicode = emojis[key]
-                RequestBuffer.request { messageSent.addReaction(ReactionEmoji.of(unicode)) }.get()
-            }
+            for (key in map.keys)
+                RequestBuffer.request { messageSent.addReaction(ReactionEmoji.of(key))}.get()
 
             }))
+
+        commands.add(toCommand(Test.startsWith("invite"), CommandLambda { handle.sendMessage(it,"https://discordapp.com/oauth2/authorize?client_id=500780039030308875&scope=bot") }))
+
+//        commands.add(toCommand(Test {
+//            var arr = it.message.mentions
+//            if(arr.size != 0)
+//                return@Test
+//            return arr.get(0).
+//        }, CommandLambda {
+
+//        }))
     }
     companion object {
-        var emojis = HashMap<String, String>()
+        var emojis =  mutableMapOf<String,String>()
+        val arr = "abcdefghijklmnopqrstuvwxyz".toCharArray()
         init {
-            val arr = "abcdefghijklmnopqrstuvwxyz".toCharArray()
             for((index, c) in ('\uDDE6'..'\uDDFF').withIndex())
-                emojis[":regional_indicator_${arr[index]}:"] = "\uD83C$c"
+                emojis["${arr[index]}"] = "\uD83C$c"
         }
     }
 }
