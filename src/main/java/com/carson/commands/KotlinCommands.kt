@@ -1,6 +1,7 @@
 package com.carson.commands
 
 import com.carson.core.*
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent
 import sx.blah.discord.util.RequestBuffer
 import sx.blah.discord.handle.impl.obj.ReactionEmoji
@@ -8,6 +9,9 @@ import sx.blah.discord.handle.obj.IGuild
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 import sx.blah.discord.handle.obj.Permissions
+import sx.blah.discord.util.MissingPermissionsException
+import java.lang.Exception
+import java.util.function.Predicate
 
 
 class KotlinCommands() : CommandCollection("Carson") {
@@ -80,9 +84,26 @@ class KotlinCommands() : CommandCollection("Carson") {
             val str = users.toList().fold("") { all, pair -> "$all\n${getName(pair.first,it.guild)} : ${pair.second}"}.trim()
 
             val message = handle.sendMessageAndGet(it.channel, "I will change these nicknames:\n```\n$str\n```\nHave an admin react :+1: to approve")
-            message.addReaction(ReactionEmoji.of("\uD83D\uDC4D"))
-            val reactionEvent = it.client.dispatcher.waitFor<ReactionEvent> { mes -> mes.message == it.message && mes.user.getPermissionsForGuild(it.guild).contains(Permissions.ADMINISTRATOR) }
-            handle.sendMessage(it,reactionEvent.user.mention() + " has approved changes. Making changes now")
+
+            RequestBuffer.request { message.addReaction(ReactionEmoji.of("\uD83D\uDC4D")) }.get()
+
+            val reactionEvent = it.client.dispatcher.waitFor(Predicate<ReactionAddEvent> { mes ->
+                return@Predicate mes.messageID == message.longID &&
+                        mes.user != it.client.ourUser
+                        && mes.author.getPermissionsForGuild(mes.guild).any { it == Permissions.ADMINISTRATOR}
+            })
+            handle.sendMessageAndGet(it.channel,reactionEvent.user.mention() + " has approved changes. Making changes now")
+            var failedUsers = mutableListOf<String>()
+            users.forEach {
+                RequestBuffer.request {
+                    try {
+                        message.guild.setUserNickname(it.key, it.value)
+                    } catch(e : Exception){
+                        failedUsers.add(getName(it.key,message.guild))
+                    }
+                }.get()
+            }
+            handle.sendMessage(it,"I wasn't able to set these users:${failedUsers.fold("```\n") { all, key -> "$all\n$key" }}```")
         }))
 
 
