@@ -48,14 +48,23 @@ class KotlinCommands() : CommandCollection("Carson") {
 
         commands.add(toCommand(Test.startsWith("invite"), CommandLambda { handle.sendMessage(it,"https://discordapp.com/oauth2/authorize?client_id=500780039030308875&scope=bot") }))
 
-//        commands.add(toCommand(Test {
-//            var arr = it.message.mentions
-//            if(arr.size != 0)
-//                return@Test false
-//            return@Test arr[0] == it.client.ourUser
-//        }, CommandLambda {
-//
-//        }))
+        commands.add(toCommand(Test {
+            var arr = it.message.mentions
+            if(arr.size != 1)
+                return@Test false
+            return@Test arr[0] == it.client.ourUser
+        }, CommandLambda {
+            handle.sendMessage(it, "Hi, I'm <@500780039030308875>, a bot made to give people the ability to write" +
+                    " Discord bots without having to host it or manage boilerplate. I'm written in java and mainly run by" +
+                    " <@293853365891235841>, and contributing is really easy. Use !contribute to find out how!\n" +
+                    "Commands avalible are:```\ninvite\npoll\nping\nstatus\ncontribute\n```")
+        }))
+
+        commands.add(toCommand(Test.startsWith("contribute"), CommandLambda {
+            handle.sendMessage(it, "You can find the guild to start contributing here:" +
+                    "https://github.com/Mee42/community-bot/wiki\n" +
+                    "You can write both Java and Pesudo code, allowing everyone to contribute.")
+        }))
     }
     companion object {
         val arr = "abcdefghijklmnopqrstufvwxyz".toCharArray()
