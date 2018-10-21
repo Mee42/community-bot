@@ -90,20 +90,20 @@ class KotlinCommands() : CommandCollection("Carson") {
             val reactionEvent = it.client.dispatcher.waitFor(Predicate<ReactionAddEvent> { mes ->
                 return@Predicate mes.messageID == message.longID &&
                         mes.user != it.client.ourUser
-                        && mes.author.getPermissionsForGuild(mes.guild).any { it == Permissions.ADMINISTRATOR}
+                        && ( mes.author.getPermissionsForGuild(mes.guild).any { it == Permissions.ADMINISTRATOR } ||
+                             mes.guild.owner == mes.author)
             })
             handle.sendMessageAndGet(it.channel,reactionEvent.user.mention() + " has approved changes. Making changes now")
-            var failedUsers = mutableListOf<String>()
             users.forEach {
                 RequestBuffer.request {
-                    try {
-                        message.guild.setUserNickname(it.key, it.value)
-                    } catch(e : Exception){
-                        failedUsers.add(getName(it.key,message.guild))
-                    }
+                    try { message.guild.setUserNickname(it.key, it.value) }
+                    catch(e :MissingPermissionsException){e}
                 }.get()
             }
-            handle.sendMessage(it,"I wasn't able to set these users:${failedUsers.fold("```\n") { all, key -> "$all\n$key" }}```")
+            val failedUsers = it.guild.users.map { user -> Pair(user, getName(user,it.guild))}.toMap()
+                    .filter { (_,value) -> !value.replace("[","").toLowerCase().startsWith("mc")}.toList()
+
+            handle.sendMessage(it,"I wasn't able to set these users:${failedUsers.fold("```\n") { all, key -> "$all\n${key.second}" }}```")
         }))
 
 
