@@ -32,6 +32,11 @@ contribute||get info on how to contribute|get info on how to contribute
 ***
 mc||hahahaha|change everyone's nickname so it starts with Mc. Has an approval stage, just running the command won't change anything until an admin approves
 ***
+ping||test the ping|test how long it takes for a message to be sent with the bot, in milliseconds
+***
+status||get the bot status|Gets bot uptime, server uptime, guild count, user count, ect
+***
+
 
 """.trimIndent().replace("\n","")
 
