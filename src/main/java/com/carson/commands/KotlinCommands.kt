@@ -1,20 +1,18 @@
 package com.carson.commands
 
 import com.carson.core.*
+import com.google.gson.GsonBuilder
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent
-import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent
 import sx.blah.discord.util.RequestBuffer
 import sx.blah.discord.handle.impl.obj.ReactionEmoji
 import sx.blah.discord.handle.obj.IGuild
-import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 import sx.blah.discord.handle.obj.Permissions
 import sx.blah.discord.util.MissingPermissionsException
-import java.lang.Exception
 import java.util.function.Predicate
 
 
-class KotlinCommands() : CommandCollection("Carson") {
+class KotlinCommands : CommandCollection("Carson") {
     override fun genCommands(commands: MutableList<Command>?, handle: Handler?) {
         if(commands == null || handle == null)
             return
@@ -26,7 +24,7 @@ class KotlinCommands() : CommandCollection("Carson") {
                 return@CommandLambda
             }
 
-            var split = content.split("|").toMutableList()
+            val split = content.split("|").toMutableList()
             val question :String
             if(split[0].split("&").size == 1){
                 question = ""
@@ -44,7 +42,7 @@ class KotlinCommands() : CommandCollection("Carson") {
                 return@CommandLambda
             }
             var index = 0
-            val map = split.associate { Pair((emojis["${arr[index++]}"]), it) }//generate an array
+            val map = split.associate { itt -> Pair((emojis["${arr[index++]}"]), itt) }//generate an array
             var message = "$question\nOptions:\n"
             for ((key, value) in map) {
                 message += "$key : $value\n"
@@ -57,8 +55,9 @@ class KotlinCommands() : CommandCollection("Carson") {
 
         commands.add(toCommand(Test.startsWith("invite"), CommandLambda { handle.sendMessage(it,"https://discordapp.com/oauth2/authorize?client_id=500780039030308875&scope=bot") }))
 
+        //mentions
         commands.add(toCommand(Test {
-            var arr = it.message.mentions
+            val arr = it.message.mentions
             if(arr.size != 1)
                 return@Test false
             return@Test arr[0] == it.client.ourUser
@@ -90,14 +89,14 @@ class KotlinCommands() : CommandCollection("Carson") {
             val reactionEvent = it.client.dispatcher.waitFor(Predicate<ReactionAddEvent> { mes ->
                 return@Predicate mes.messageID == message.longID &&
                         mes.user != it.client.ourUser
-                        && ( mes.author.getPermissionsForGuild(mes.guild).any { it == Permissions.ADMINISTRATOR } ||
+                        && ( mes.author.getPermissionsForGuild(mes.guild).any { itt -> itt == Permissions.ADMINISTRATOR } ||
                              mes.guild.owner == mes.author)
             })
             handle.sendMessageAndGet(it.channel,reactionEvent.user.mention() + " has approved changes. Making changes now")
-            users.forEach {
+            users.forEach {itt ->
                 RequestBuffer.request {
-                    try { message.guild.setUserNickname(it.key, it.value) }
-                    catch(e :MissingPermissionsException){e}
+                    try { message.guild.setUserNickname(itt.key, itt.value) }
+                    catch(e :MissingPermissionsException){}
                 }.get()
             }
             val failedUsers = it.guild.users.map { user -> Pair(user, getName(user,it.guild))}.toMap()
@@ -106,10 +105,50 @@ class KotlinCommands() : CommandCollection("Carson") {
             handle.sendMessage(it,"I wasn't able to set these users:${failedUsers.fold("```\n") { all, key -> "$all\n${key.second}" }}```")
         }))
 
+        commands.add(toCommand(Test.startsWith("helpraw"), CommandLambda {
+            handle.sendMessage(it, "```json\n${GsonBuilder().setPrettyPrinting().create().toJson(HELP)}```")
+        }))
+
+        commands.add(toCommand(Test.startsWith("help"), CommandLambda {
+            val message = it.message.content
+            if(message.split(" ").size == 1){
+                val str = HELP.fold("") {all,one -> "$all\n${one.name} ${
+                one.args.fold("") {all2,one2 -> "$all2 ${if(one2.type == Type.SET) one2.raw.replaceFirst("${one2.name}:","") else one2.raw}"}
+                }  |  ${one.short}" }
+                handle.sendMessage(it,"```\n$str```")
+            }else{
+                val command = message.split(" ")[1]
+                val entry = HELP.find { entry -> entry.name == command }
+                if(entry == null){
+                    handle.sendMessage(it,"I could not find that command")
+                    return@CommandLambda
+                }
+
+                val folded = entry.args.fold("") {all,one->
+                    if(one.type == Type.SET){
+
+                    }
+                    return@fold "$all\n" + "`" + one.name + "` :  " + if(one.type == Type.OPTIONAL) "Optional" else "Required"
+                }.replaceFirst("\n","")
+
+                var long = entry.long
+                for(arg in entry.args){
+                    long = long.replace(arg.raw,"`${arg.raw}`")
+                }
+
+                var argsStr = "\n$folded\n\n"
+                if(folded.isEmpty())
+                    argsStr = "\n"
+
+                val str = "${entry.name}:$argsStr$long"
+                handle.sendMessage(it,str)
+            }
+        }))
+
 
     }
 
-    fun getName(user : IUser, guild : IGuild) : String = if (user.getNicknameForGuild(guild)?: "null" == "null") user.name else user.getNicknameForGuild(guild)
+    private fun getName(user : IUser, guild : IGuild) : String = if (user.getNicknameForGuild(guild)?: "null" == "null") user.name else user.getNicknameForGuild(guild)
 
     companion object {
         val arr = "abcdefghijklmnopqrstufvwxyz".toCharArray()
