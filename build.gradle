@@ -22,6 +22,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.8.0-beta2'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile 'org.mongodb:mongo-java-driver:3.8.0'
 
 
 }

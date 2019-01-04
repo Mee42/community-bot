@@ -21,23 +21,23 @@ public class Handler extends MessageHandler {
         Executors.newSingleThreadExecutor().execute(() -> {
             log(event);
             for (Command command : commands) {
+//                System.out.println("Testing command (" + command.toString() + ")");
                 if (command.test(event)) {
                     System.out.println("running command (" + command.toString() + ")");
                     command.run(event);
-                    return;
                 }
             }
         });
     }
 
-    List<Command> commands = new ArrayList<>();
+    private List<Command> commands = new ArrayList<>();
 
-    public void init(){
+    void init(){
         for(CommandCollection collection : Main.collectionList){
+            int size = commands.size();
             commands.addAll(collection.getCommands(this));
         }
     }
-
 
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -54,6 +54,4 @@ public class Handler extends MessageHandler {
         System.out.println(str);
         return str;
     }
-
-
 }

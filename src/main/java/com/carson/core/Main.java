@@ -1,6 +1,7 @@
 package com.carson.core;
 
 import com.carson.commands.AdminCommands;
+import com.carson.commands.ChainCommands;
 import com.carson.commands.KotlinCommands;
 import sx.blah.discord.api.IDiscordClient;
 
@@ -21,5 +22,6 @@ public class Main {
     static{
         collectionList.add(new AdminCommands());
         collectionList.add(new KotlinCommands());
+        collectionList.add(new ChainCommands());
     }
 }
