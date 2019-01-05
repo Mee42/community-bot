@@ -44,7 +44,15 @@ class ChainCommands : KotlinCommandCollection("Carson") {
             var queryData :Long? = null
             when{
                 argument == null -> {
-                    handle.sendMessage(event, "*help menu*")
+                    handle.sendMessage(event, """
+-~-  Help Menu  -~-
+!chain global          |  generate based on every message
+!chain server          |  generate based on only messages from this server
+!chain @mention  |  generate based only on messages from that person
+!chain #mention   |  generate based only on messages in that channel
+!chain *id*                  |  use an id for channel, server, or user
+
+                    """.trimIndent())
                     return@command
                 }
                 event.message.mentions.size == 1 -> {
