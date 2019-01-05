@@ -9,6 +9,7 @@ import org.bson.Document
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import java.lang.NumberFormatException
 import java.lang.RuntimeException
+import kotlin.concurrent.thread
 
 
 const val END   = "!END!"
@@ -26,7 +27,7 @@ enum class Context(name: String) {
 class ChainCommands : KotlinCommandCollection("Carson") {
     init{
         //init connection to the database on another thread
-        Thread { println("message counts:" + getMessageDB().countDocuments()) }.start()
+        thread { println("message counts:" + getMessageDB().countDocuments()) }
     }
     override fun genWeirdCommands(commands: MutableList<Command>, handle: Handler) {}
 
@@ -103,35 +104,35 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                     }; null }
                 }
             } ?: if(queryType == Context.UNKNOWN){//if chain is null
-                //if it wasn't identified
-                handle.sendMessage(event,"I can't find that for some reason. Please contact the developer via dm here: <@293853365891235841>")
-                return@command
-            }else{
-                //push the chain
-                ChainStack.push(queryType,queryData!!)//eehehehhehh. Writing this is painful.
-                handle.sendMessageAndGet(event.channel, "I'm putting that to the queue for processing. Once it's processed, new messages will be added to it dynamically.\n" +
-                        "This should take anywhere from seconds to a minute or two for big servers. Keep in mind, collection will only include messages since 2019-1-5.\n" +
-                        "I will automatically send it if the chain completes within 10 seconds")
-                ChainStack.singleton.popChain()
-                Thread {
-                    val time = System.currentTimeMillis()
-                    var chain :Chain? = null
-                    while(time + 10_000 > System.currentTimeMillis()) {
-                        chain = when (queryType) {
-                            Context.GUILD  -> ChainCache guild queryData
-                            Context.CHANNEL -> ChainCache channel queryData
-                            Context.USER -> ChainCache author queryData
-                            Context.GLOBAL -> ChainCache.global
-                            else -> return@Thread }
-                        if(chain == null)
-                            Thread.sleep(100)
-                        else
-                            break
+                    //if it wasn't identified
+                    handle.sendMessage(event,"I can't find that for some reason. Please contact the developer via dm here: <@293853365891235841>")
+                    return@command
+                }else{
+                    //push the chain
+                    ChainStack.push(queryType,queryData!!)//eehehehhehh. Writing this is painful.
+                    handle.sendMessageAndGet(event.channel, "I'm putting that to the queue for processing. Once it's processed, new messages will be added to it dynamically.\n" +
+                            "This should take anywhere from seconds to a minute or two for big servers. Keep in mind, collection will only include messages since 2019-1-5.\n" +
+                            "I will automatically send it if the chain completes within 10 seconds")
+                    ChainStack.singleton.popChain()
+                    thread thread@{
+                        val time = System.currentTimeMillis()
+                        var chain :Chain? = null
+                        while(time + 10_000 > System.currentTimeMillis()) {
+                            chain = when (queryType) {
+                                Context.GUILD  -> ChainCache guild queryData
+                                Context.CHANNEL -> ChainCache channel queryData
+                                Context.USER -> ChainCache author queryData
+                                Context.GLOBAL -> ChainCache.global
+                                else -> return@thread }
+                            if(chain == null)
+                                Thread.sleep(100)
+                            else
+                                break
+                        }
+                        handle.sendMessage(event,"Here's your phrase: ```\n${chain!!.generateSentance()}```")
                     }
-                    handle.sendMessage(event,"Here's your phrase: ```\n${chain!!.generateSentance()}```")
-                }.start()
-                return@command
-            }
+                    return@command
+                }
             handle.sendMessage(event,"Here's your phrase: ```\n${chain.generateSentance()}```")
 
         }
@@ -140,13 +141,11 @@ class ChainCommands : KotlinCommandCollection("Carson") {
 
 }
 
-
 val client :MongoClient = MongoClient("192.168.1.203:27017")
 val db :MongoDatabase = client.getDatabase("carson-bot")
 fun getMessageDB() :MongoCollection<Document>{
     return db.getCollection("messages")
 }
-
 
 class ChainCache{companion object{
     private val guilds = mutableMapOf<Long,Chain>()
