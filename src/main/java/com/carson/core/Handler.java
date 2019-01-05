@@ -1,5 +1,9 @@
 package com.carson.core;
 
+import com.carson.commands.ChainStack;
+import com.carson.commands.Context;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
@@ -7,8 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import static com.carson.commands.ChainCommandsKt.getMessageDB;
 
 public class Handler extends MessageHandler {
     public Handler(IDiscordClient client) {
@@ -20,6 +25,22 @@ public class Handler extends MessageHandler {
     public void onMessage(MessageReceivedEvent event) {
         Executors.newSingleThreadExecutor().execute(() -> {
             log(event);
+
+
+            final MongoCollection<Document> coll = getMessageDB();
+            Document doc = new Document()
+                    .append("_id",event.getMessageID())
+                    .append(Context.USER.getDatabaseName(),event.getAuthor().getLongID())
+                    .append(Context.CHANNEL.getDatabaseName(),event.getChannel().getLongID())
+                    .append("content",event.getMessage().getContent());
+            if(!event.getChannel().isPrivate()){
+                doc.append(Context.GUILD.getDatabaseName(),event.getGuild().getLongID() );
+            }
+            System.out.println("inserting doc into db");
+            coll.insertOne(doc);
+            //push the message to be processed
+            ChainStack.Companion.push(event);
+
             for (Command command : commands) {
 //                System.out.println("Testing command (" + command.toString() + ")");
                 if (command.test(event)) {
@@ -34,7 +55,6 @@ public class Handler extends MessageHandler {
 
     void init(){
         for(CommandCollection collection : Main.collectionList){
-            int size = commands.size();
             commands.addAll(collection.getCommands(this));
         }
     }

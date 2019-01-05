@@ -8,42 +8,38 @@ import com.mongodb.client.MongoDatabase
 import org.bson.Document
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import java.lang.NumberFormatException
+import java.lang.RuntimeException
 
 
 const val END   = "!END!"
 const val START = "!START!"
 
+enum class Context(name: String) {
+    USER("author"),
+    GUILD("guild"),
+    GLOBAL("global"),
+    CHANNEL("channel"),
+    UNKNOWN("unknown");
+    val databaseName :String = name
+}
+
 class ChainCommands : KotlinCommandCollection("Carson") {
     init{
-        //init connection to the database
+        //init connection to the database on another thread
         Thread { println("message counts:" + getMessageDB().countDocuments()) }.start()
     }
-    override fun genWeirdCommands(commands: MutableList<Command>, handle: Handler) {
-        commands+=toCommand({ true }, {
-            val coll = getMessageDB()
-            val doc = Document()
-                    .append("_id",it.messageID)
-                    .append("author",it.author.longID)
-                    .append("channel",it.channel.longID)
-                    .append("content",it.message.content)
-            if(!it.channel.isPrivate){
-                doc.append("guild",it.guild.longID)
-            }
-            println("inserting doc into db")
-            coll.insertOne(doc)
-        })
+    override fun genWeirdCommands(commands: MutableList<Command>, handle: Handler) {}
 
-    }
 
     override fun genKotlinCommands(commands: MutableMap<String, (MessageReceivedEvent) -> Unit>, handle: Handler) {
         //note: prefixes are automatically applied
-        commands["chainASDF"] = command@ {event ->
+
+        commands["chain"] = command@ {event ->
             val content = event.message.content
             val argument :String? =if(content == "!chain") null else content.replace("!chain","").trim()
 
 
-            val USER = "USER"; val GUILD = "GUILD"; val GLOBAL = "GLOBAL"; val CHANNEL = "CHANNEL"; val UNKNOWN = "UNKNOWN"
-            var queryType: String? = null
+            var queryType: Context?
             var queryData :Long? = null
             when{
                 argument == null -> {
@@ -52,7 +48,7 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                 }
                 event.message.mentions.size == 1 -> {
                     //run with mention
-                    queryType = USER
+                    queryType = Context.USER
                     queryData = event.message.mentions[0].longID
                 }
                 event.message.mentions.size > 1 -> {
@@ -60,7 +56,7 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                     return@command
                 }
                 event.message.channelMentions.size == 1 -> {
-                    queryType = CHANNEL
+                    queryType = Context.CHANNEL
                     queryData = event.message.channelMentions[0].longID
                 }
                 event.message.channelMentions.size > 1 -> {
@@ -68,70 +64,82 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                     return@command
                 }
                 argument.toUpperCase() == "GLOBAL" -> {
-                    queryType = GLOBAL
+                    queryType = Context.GLOBAL
                 }
                 argument.toUpperCase() == "GUILD" || argument.toUpperCase() == "SERVER" -> {
-                    queryType = GUILD
+                    queryType = Context.GUILD
+                    queryData = event.guild.longID
                 }
                 event.message.mentionsHere() -> {
                     handle.sendMessage(event, "I can't use `@here` for this")
+                    return@command
                 }
                 else -> {
                     try{
                         queryData = argument.toLong()
-                        queryType = UNKNOWN
+                        queryType = Context.UNKNOWN
                     }catch(e :NumberFormatException){
                         handle.sendMessage(event,"I can't understand that argument :cry:")
                         return@command
                     }
                 }
             }
-            //now that we have the data, we need to build up the entire database structure before we can continue
-            handle.sendMessage(event,"I don't have any more information, but I can tell you that:\n" +
-                    "content=`$content`\n" +
-                    "argument=`$argument`\n" +
-                    "queryType=`$queryType`\n" +
-                    "queryData=`$queryData`\n")
-
-
-            //gotta make the query now
-
             //attempt to find the right chain. if it doesn't exist, push it to the stack and start working on it in the background
             val chain = when (queryType) {
-                GUILD -> ChainCache guild queryData!!
-                CHANNEL -> ChainCache channel queryData!!
-                USER -> ChainCache author queryData!!
-                GLOBAL -> ChainCache.global
-                UNKNOWN -> {
+                Context.GUILD  -> ChainCache guild queryData!!
+                Context.CHANNEL -> ChainCache channel queryData!!
+                Context.USER -> ChainCache author queryData!!
+                Context.GLOBAL -> ChainCache.global ?: run {
+                    handle.sendMessage(event, "The global chain has not finished initial processing, check back later in a few minutes")
+                    return@command
+                }
+                Context.UNKNOWN -> {
                     val chain = ChainCache guild queryData!! ?: ChainCache channel queryData ?: ChainCache author queryData
                     if(chain != null) chain
                     else { when {
-                        event.guild.getUserByID(queryData) != null -> queryType = USER
-                        event.client.guilds.any { it.longID == queryData } -> queryType = GUILD
-                        event.guild.channels.any { it.longID == queryData } -> queryType = CHANNEL
+                        event.guild.getUserByID(queryData) != null -> queryType = Context.USER
+                        event.client.guilds.any { it.longID == queryData } -> queryType = Context.GUILD
+                        event.guild.channels.any { it.longID == queryData } -> queryType = Context.CHANNEL
                     }; null }
                 }
-                else -> null
+            } ?: if(queryType == Context.UNKNOWN){//if chain is null
+                //if it wasn't identified
+                handle.sendMessage(event,"I can't find that for some reason. Please contact the developer via dm here: <@293853365891235841>")
+                return@command
+            }else{
+                //push the chain
+                ChainStack.push(queryType,queryData!!)//eehehehhehh. Writing this is painful.
+                handle.sendMessageAndGet(event.channel, "I'm putting that to the queue for processing. Once it's processed, new messages will be added to it dynamically.\n" +
+                        "This should take anywhere from seconds to a minute or two for big servers. Keep in mind, collection will only include messages since 2019-1-5.\n" +
+                        "I will automatically send it if the chain completes within 10 seconds")
+                ChainStack.singleton.popChain()
+                Thread {
+                    val time = System.currentTimeMillis()
+                    var chain :Chain? = null
+                    while(time + 10_000 > System.currentTimeMillis()) {
+                        chain = when (queryType) {
+                            Context.GUILD  -> ChainCache guild queryData
+                            Context.CHANNEL -> ChainCache channel queryData
+                            Context.USER -> ChainCache author queryData
+                            Context.GLOBAL -> ChainCache.global
+                            else -> return@Thread }
+                        if(chain == null)
+                            Thread.sleep(100)
+                        else
+                            break
+                    }
+                    handle.sendMessage(event,"Here's your phrase: ```\n${chain!!.generateSentance()}```")
+                }.start()
+                return@command
             }
-            if(chain == null){
-                if(queryType == UNKNOWN){
-                    //if it wasn't identified
-                    handle.sendMessage(event,"I can't find that. I'm not very good at identifying ID's. Please use a mention if possible")
-                    return@command
-                }
-            }
-            handle.sendMessage(event, "I haven't coded that path yet! ")
-            handle.sendMessage(event,"I don't have any more information, but I can tell you that:\n" +
-                    "content=`$content`\n" +
-                    "argument=`$argument`\n" +
-                    "queryType=`$queryType`\n" +
-                    "queryData=`$queryData`\n")
+            handle.sendMessage(event,"Here's your phrase: ```\n${chain.generateSentance()}```")
 
         }
 
     }
 
 }
+
 
 val client :MongoClient = MongoClient("192.168.1.203:27017")
 val db :MongoDatabase = client.getDatabase("carson-bot")
@@ -165,39 +173,8 @@ class ChainCache{companion object{
         channels[id]=chain
     }
 
-    val global = Chain()
+    var global :Chain? = null
+
 }}
 
 
-
-class Chain{
-    val map :MutableMap<String,MutableList<String>> = mutableMapOf()
-    /** feeds another message into the chain */
-    fun feed(input: String) {
-        val list :List<String> = parse(input)
-        for(i in 1 until list.size){
-            if(!map.containsKey(list[i-1]))
-                map[list[i-1]] = mutableListOf()
-            map[list[i-1]]!!+=list[i]
-        }
-    }
-
-    private fun parse(input: String): List<String> = (END + input + START).split(" ").filter { it.isNotBlank() }
-
-    fun generateSentance() :String{
-        val str = mutableListOf<String>()
-        str+=START
-        while(!str.isEmpty() && str.last() != END){
-            val mapPos = str.last()
-            if(map[mapPos] == null){
-                str+=END
-                break
-            }
-            val rand = (Math.random() * map[mapPos]!!.size).toInt()
-            str+=map[mapPos]!![rand]
-        }
-        str.removeIf { it == END || it == START }
-        return str.fold("") {fold,one -> "$fold $one"}.trim()
-    }
-
-}

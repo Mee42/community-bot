@@ -1,7 +1,5 @@
 package com.carson.commands
 
-import java.util.regex.Pattern
-import javax.management.monitor.StringMonitor
 
 
 //style:
@@ -36,6 +34,7 @@ ping||test the ping|test how long it takes for a message to be sent with the bot
 ***
 status||get the bot status|Gets bot uptime, server uptime, guild count, user count, ect
 ***
+chain||generate a Markov chain based on arguments|use the command without arguments for more information
 
 
 """.trimIndent().replace("\n","")
