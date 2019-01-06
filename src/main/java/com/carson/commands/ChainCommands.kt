@@ -35,6 +35,14 @@ class ChainCommands : KotlinCommandCollection("Carson") {
     override fun genKotlinCommands(commands: MutableMap<String, (MessageReceivedEvent) -> Unit>, handle: Handler) {
         //note: prefixes are automatically applied
 
+        commands["cache"] = command@ {
+            val b = StringBuilder()
+            b.append("Guilds:${ChainCache.guildSize}\n")
+            b.append("Users:${ChainCache.authorSize}\n")
+            b.append("Channels:${ChainCache.channelSize}\n")
+            handle.sendMessage(it,"Cache:\n```\n$b\n```")
+        }
+
         commands["chain"] = command@ {event ->
             val content = event.message.content
             val argument :String? =if(content == "!chain") null else content.replace("!chain","").trim()
@@ -157,6 +165,8 @@ fun getMessageDB() :MongoCollection<Document>{
 
 class ChainCache{companion object{
     private val guilds = mutableMapOf<Long,Chain>()
+    val guildSize
+    get() = guilds.size
     infix fun guild(long :Long) :Chain?{
         return guilds[long]
     }
@@ -165,6 +175,8 @@ class ChainCache{companion object{
     }
 
     private val authors = mutableMapOf<Long,Chain>()
+    val authorSize
+    get() = authors.size
     infix fun author(long :Long) :Chain?{
         return authors[long]
     }
@@ -173,6 +185,8 @@ class ChainCache{companion object{
     }
 
     private val channels = mutableMapOf<Long,Chain>()
+    val channelSize
+    get() = channels.size
     infix fun channel(long :Long) :Chain?{
         return channels[long]
     }
@@ -183,5 +197,3 @@ class ChainCache{companion object{
     var global :Chain? = null
 
 }}
-
-
