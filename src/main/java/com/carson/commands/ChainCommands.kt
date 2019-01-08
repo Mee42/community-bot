@@ -6,8 +6,15 @@ import com.carson.core.KotlinCommandCollection
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
+import com.mongodb.client.model.Filters
+import com.vdurmont.emoji.EmojiManager
 import org.bson.Document
+import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionRemoveEvent
+import sx.blah.discord.util.RequestBuffer
 import java.lang.NumberFormatException
 import kotlin.concurrent.thread
 
@@ -27,7 +34,7 @@ enum class Context(name: String) {
 class ChainCommands : KotlinCommandCollection("Carson") {
     init{
         //init connection to the database on another thread
-        thread { println("message counts:" + getMessageDB().countDocuments()) }
+        thread { println("message counts:" + getMessageCollection().countDocuments()) }
     }
     override fun genWeirdCommands(commands: MutableList<Command>, handle: Handler) {}
 
@@ -126,9 +133,9 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                 }else{
                     //push the chain
                     ChainStack.push(queryType,queryData!!)//eehehehhehh. Writing this is painful.
-                    handle.sendMessageAndGet(event.channel, "I'm putting that to the queue for processing. Once it's processed, new messages will be added to it dynamically.\n" +
-                            "This should take anywhere from seconds to a minute or two for big servers. Keep in mind, collection will only include messages since 2019-1-5.\n" +
-                            "I will automatically send it if the chain completes within 10 seconds")
+//                    handle.sendMessageAndGet(event.channel, "I'm putting that to the queue for processing. Once it's processed, new messages will be added to it dynamically.\n" +
+//                            "This should take anywhere from seconds to a minute or two for big servers. Keep in mind, collection will only include messages since 2019-1-5.\n" +
+//                            "I will automatically send it if the chain completes within 10 seconds")
                     ChainStack.singleton.popChain()
                     thread thread@{
                         val time = System.currentTimeMillis()
@@ -145,22 +152,89 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                             else
                                 break
                         }
-                        handle.sendMessage(event,"Here's your phrase: ```\n${chain!!.generateSentance()}```")
+                        sendChainMessage(chain!!,event)
                     }
                     return@command
                 }
-            handle.sendMessage(event,"Here's your phrase: ```\n${chain.generateSentance()}```")
-
+            sendChainMessage(chain,event)
         }
 
+        commands["best"] = command@ {event ->
+            val b = StringBuilder()
+            var length = 0
+            getBotMessageCollection()
+                    .find()
+                    .toList()
+                    .map { Triple(it,it[upvotes],it[downvotes])}
+                    .filter { it.second != null && it.third != null }
+                    .map { Pair(it.first,Integer.parseInt(it.second.toString()) - Integer.parseInt(it.third.toString())) }
+                    .sortedBy { it.second }
+                    .map { length++;it }
+                    .subList(0,if(length > 5) 5 else length)
+                    .forEachIndexed { index, x ->
+                        b.append(index + 1).append(" : `").append(x.first["content"].toString()).append("`\n")
+                    }
+            handle.sendMessage(event,b.toString())
+        }
+
+
+
     }
+
+    fun sendChainMessage(chain :Chain, event :MessageReceivedEvent){
+        val content = chain.generateSentance()
+        val message  = RequestBuffer.request(RequestBuffer.IRequest { event.channel.sendMessage("Here's your phrase: ```\n$content```") }).get()
+        getBotMessageCollection().insertOne(Document().append("_id",message.longID).append("content",content))
+        RequestBuffer.request { message.addReaction(EmojiManager.getForAlias("thumbsup")) }
+        RequestBuffer.request {  message.addReaction(EmojiManager.getForAlias("thumbsdown")) }
+    }
+
+}
+
+const val upvotes = "upvotes"
+const val downvotes = "downvotes"
+class EmojiHandler{
+    @EventSubscriber
+    fun emojiAdd(event: ReactionAddEvent) {
+        onEmojiEvent(event,true)
+    }
+    @EventSubscriber
+    fun emojiRemove(event : ReactionRemoveEvent){
+        onEmojiEvent(event,false)
+    }
+
+    fun onEmojiEvent(event :ReactionEvent, add :Boolean){
+        val id = event.messageID
+        if(event.user.isBot)return
+        val doc = getBotMessageCollection()
+                .find(Filters.all("_id",id))
+                .first() ?: return
+        if(event.reaction.emoji.name == "\uD83D\uDC4D")//upvote
+            if(doc.containsKey(upvotes))
+                doc[upvotes] = doc[upvotes] as Int + if (add) 1 else -1
+            else
+                doc[upvotes] = if(add) 1 else -1
+
+        if(event.reaction.emoji.name == "\uD83D\uDC4E")//downvote
+            if(doc.containsKey(downvotes))
+                doc[downvotes] = doc[downvotes] as Int + if (add) 1 else -1
+            else
+                doc[downvotes] = if(add) 1 else -1
+
+        getBotMessageCollection().replaceOne(Filters.all("_id",id),doc)
+
+    }
+
 
 }
 
 val client :MongoClient = MongoClient("192.168.1.203:27017")
 val db :MongoDatabase = client.getDatabase("carson-bot")
-fun getMessageDB() :MongoCollection<Document>{
+fun getMessageCollection() :MongoCollection<Document>{
     return db.getCollection("messages")
+}
+fun getBotMessageCollection() :MongoCollection<Document>{
+    return db.getCollection("bot-messages")
 }
 
 class ChainCache{companion object{

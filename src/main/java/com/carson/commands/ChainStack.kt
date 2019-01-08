@@ -50,8 +50,8 @@ class ChainStack{
         if(context == Context.GLOBAL && ChainCache.global != null)throw UnsupportedOperationException("Can not pop global chain as it has already been created")
         val id = pair.second
         val found = when(context){
-            Context.GLOBAL -> getMessageDB().find()
-            else -> getMessageDB().find(Filters.all(context.databaseName, id))
+            Context.GLOBAL -> getMessageCollection().find()
+            else -> getMessageCollection().find(Filters.all(context.databaseName, id))
         }
         val chain = Chain()
         found.forEach {

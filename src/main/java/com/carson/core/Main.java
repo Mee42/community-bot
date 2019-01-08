@@ -13,6 +13,7 @@ public class Main {
         final IDiscordClient client = Utils.buildClient();
         Handler handler = new Handler(client);
         Utils.registerListener(client,handler);
+        client.getDispatcher().registerListener(new EmojiHandler());
         client.login();
     }
 

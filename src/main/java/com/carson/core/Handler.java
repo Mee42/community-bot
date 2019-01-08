@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import static com.carson.commands.ChainCommandsKt.getMessageDB;
+import static com.carson.commands.ChainCommandsKt.getMessageCollection;
 
 public class Handler extends MessageHandler {
     public Handler(IDiscordClient client) {
@@ -27,7 +27,7 @@ public class Handler extends MessageHandler {
             log(event);
 
             if(!event.getAuthor().isBot()) {
-                final MongoCollection<Document> coll = getMessageDB();
+                final MongoCollection<Document> coll = getMessageCollection();
                 Document doc = new Document()
                         .append("_id", event.getMessageID())
                         .append(Context.USER.getDatabaseName(), event.getAuthor().getLongID())
