@@ -3,6 +3,7 @@ package com.carson.core;
 import com.carson.commands.AdminCommands;
 import com.carson.commands.ChainCommands;
 import com.carson.commands.KotlinCommands;
+import com.carson.commands.WordCommands;
 import sx.blah.discord.api.IDiscordClient;
 
 import java.util.ArrayList;
@@ -23,5 +24,6 @@ public class Main {
         collectionList.add(new AdminCommands());
         collectionList.add(new KotlinCommands());
         collectionList.add(new ChainCommands());
+        collectionList.add(new WordCommands());
     }
 }
