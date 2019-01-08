@@ -2,6 +2,7 @@ package com.carson.commands
 
 import com.carson.core.Command
 import com.carson.core.Handler
+import com.carson.core.KotlinCommandCollection
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import java.io.BufferedReader
 import java.io.FileReader

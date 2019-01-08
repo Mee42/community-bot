@@ -37,7 +37,8 @@ class ChainStack{
         if(messageStack.empty())return
         val event = messageStack.pop()
         val content = event.message.content
-        if(content.startsWith("!chain"))return
+        if(content.startsWith("!"))return
+        if(content.contains(START) || content.contains(END))return
         (ChainCache author event.message.author.longID)?.feed(content)
         (ChainCache channel event.channel.longID)?.feed(content)
         (ChainCache guild event.guild.longID)?.feed(content)

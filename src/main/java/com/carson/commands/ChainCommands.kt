@@ -2,13 +2,13 @@ package com.carson.commands
 
 import com.carson.core.Command
 import com.carson.core.Handler
+import com.carson.core.KotlinCommandCollection
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import org.bson.Document
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import java.lang.NumberFormatException
-import java.lang.RuntimeException
 import kotlin.concurrent.thread
 
 

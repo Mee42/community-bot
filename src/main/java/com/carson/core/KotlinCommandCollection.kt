@@ -1,12 +1,6 @@
-package com.carson.commands
+package com.carson.core
 
-import com.carson.core.Command
-import com.carson.core.CommandCollection
-import com.carson.core.CommandLambda
-import com.carson.core.Handler
-import com.carson.core.Test
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
-import java.util.*
 
 abstract class KotlinCommandCollection(author :String) : CommandCollection(author) {
     override fun genCommands(commands: MutableList<Command>, handle: Handler) {
