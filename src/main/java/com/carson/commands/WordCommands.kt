@@ -62,7 +62,15 @@ class LazyWordChain {
                     map[arr[i]]!! += arr[i+1]
                 }
             }
+            println("Done processing")
             chain = WordChain(map)
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun staticStartProcessing() {
+            chain
         }
     }
 }
