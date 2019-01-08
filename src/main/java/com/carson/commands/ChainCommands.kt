@@ -3,6 +3,8 @@ package com.carson.commands
 import com.carson.core.Command
 import com.carson.core.Handler
 import com.carson.core.KotlinCommandCollection
+import com.carson.core.Main
+import com.carson.core.Main.PREFIX
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
@@ -215,14 +217,56 @@ class ChainCommands : KotlinCommandCollection("Carson") {
             handle.sendMessage(event, "Done!")
 
         }
+
+        commands["saved"] = command@ {event ->
+            val id = event.author.longID
+            val arr = getBotMessageCollection().find(Filters.all("saved",id))
+            val b = StringBuilder().append("Here are your saved messages:\n")
+            arr.forEach {
+                b.append("`" + it["_id"].toString() + "` : " + it["content"] + "\n")
+            }
+            handle.sendMessage(event,b.trim().toString())
+        }
+
+        commands["save"] = command@ {event ->
+            val content = event.message.content.substring("${PREFIX}save".length).trim()
+            val authorId = event.author.longID
+            val id = try{ content.toLong() }catch(e :NumberFormatException){
+                handle.sendMessage(event,"I can't parse that. Please put the ID of the sentance you want to save. This only works for !chain messages")
+                return@command
+            }
+            val doc :Document? = getBotMessageCollection().find(Filters.all("_id",id)).first()
+            if(doc == null){
+                handle.sendMessage(event, "I can't find that message. Make sure it comes from a !chain command")
+                return@command
+            }
+//            val sentence = doc["content"].toString()
+            @Suppress("UNCHECKED_CAST")
+            val arr = (doc["saved"] as? List<Long>)?.toMutableList() ?: mutableListOf()//watch this fail lol
+            if(arr.contains(authorId)) {
+                arr.remove(authorId)
+                handle.sendMessage(event, "Removed :+1:")
+            }else{
+                arr.add(authorId)
+                handle.sendMessage(event, "Added :+1:")
+            }
+            doc.remove("saved")
+            doc["saved"] = arr
+            getBotMessageCollection().replaceOne(Filters.all("_id",id),doc)
+        }
+
+
+
     }
 
     private fun sendChainMessage(chain :Chain, event :MessageReceivedEvent){
         val content = chain.generateSentance()
-        val message  = RequestBuffer.request(RequestBuffer.IRequest { event.channel.sendMessage("Here's your phrase: ```\n$content```") }).get()
+        val message  = RequestBuffer.request(RequestBuffer.IRequest { event.channel.sendMessage("`\$ID_GOES_HERE`  Here's your phrase: ```\n$content```") }).get()
+        val messageContent = message.content.replace("\$ID_GOES_HERE",message.longID.toString())
+        RequestBuffer.request { message.edit(messageContent) }
         getBotMessageCollection().insertOne(Document().append("_id",message.longID).append("content",content))
-        RequestBuffer.request { message.addReaction(EmojiManager.getForAlias("thumbsup")) }
-        RequestBuffer.request {  message.addReaction(EmojiManager.getForAlias("thumbsdown")) }
+        RequestBuffer.request { message.addReaction(EmojiManager.getForAlias("thumbsup")) }.get()
+        RequestBuffer.request {  message.addReaction(EmojiManager.getForAlias("thumbsdown")) }.get()
     }
 
 }

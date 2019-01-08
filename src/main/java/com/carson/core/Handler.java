@@ -47,6 +47,7 @@ public class Handler extends MessageHandler {
                     if (command.test(event)) {
                         System.out.println("running command (" + command.toString() + ")");
                         command.run(event);
+                        break;
                     }
                 }
             }
