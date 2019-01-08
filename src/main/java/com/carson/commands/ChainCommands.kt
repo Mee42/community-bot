@@ -167,7 +167,7 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                     .toList()
                     .map { Triple(it,it[upvotes],it[downvotes])}
                     .filter { it.second != null && it.third != null }
-                    .map { Pair(it.first,Integer.parseInt(it.second.toString()) - Integer.parseInt(it.third.toString())) }
+                    .map { Pair(it.first,it.second.toString().toInt() - it.third.toString().toInt()) }
                     .sortedBy { it.second }
                     .map { length++;it }
                     .subList(0,if(length > 5) 5 else length)
@@ -177,11 +177,47 @@ class ChainCommands : KotlinCommandCollection("Carson") {
             handle.sendMessage(event,b.toString())
         }
 
+        commands["upvote"] = command@ {event ->
+            if(event.author.longID != 293853365891235841)return@command
 
+            val strId = event.message.content.substring("!upvote".length).trim()
+            val id = try{ strId.toLong() }catch(e :NumberFormatException){
+                handle.sendMessage(event,"unable to parse `$strId`")
+                return@command
+            }
+            val message = getBotMessageCollection().find(Filters.all("_id",id)).first()
+            if(message == null){
+                handle.sendMessage(event,"Could not find the message with the id of $id")
+                return@command
+            }
+            if(message.containsKey(upvotes))
+                message[upvotes] = message[upvotes] as Int + 1
+            else
+                message[upvotes] = 1
+            handle.sendMessage(event, "Done!")
+        }
+        commands["downvote"] = command@ {event ->
+            if(event.author.longID != 293853365891235841)return@command
+            val strId = event.message.content.substring("!downvote".length).trim()
+            val id = try{ strId.toLong() }catch(e :NumberFormatException){
+                handle.sendMessage(event,"unable to parse `$strId`")
+                return@command
+            }
+            val message = getBotMessageCollection().find(Filters.all("_id",id)).first()
+            if(message == null){
+                handle.sendMessage(event,"Could not find the message with the id of $id")
+                return@command
+            }
+            if(message.containsKey(upvotes))
+                message[upvotes] = message[upvotes] as Int - 1
+            else
+                message[upvotes] = -1
+            handle.sendMessage(event, "Done!")
 
+        }
     }
 
-    fun sendChainMessage(chain :Chain, event :MessageReceivedEvent){
+    private fun sendChainMessage(chain :Chain, event :MessageReceivedEvent){
         val content = chain.generateSentance()
         val message  = RequestBuffer.request(RequestBuffer.IRequest { event.channel.sendMessage("Here's your phrase: ```\n$content```") }).get()
         getBotMessageCollection().insertOne(Document().append("_id",message.longID).append("content",content))
