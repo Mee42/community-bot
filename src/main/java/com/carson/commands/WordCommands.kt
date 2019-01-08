@@ -3,6 +3,7 @@ package com.carson.commands
 import com.carson.core.Command
 import com.carson.core.Handler
 import com.carson.core.KotlinCommandCollection
+import com.mongodb.client.model.Filters
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import java.io.BufferedReader
 import java.io.FileReader
@@ -54,7 +55,6 @@ class LazyWordChain {
                         bad = true
                 }
                 if(bad) continue
-                println("processing:$str")
                 val arr = Arrays.asList(START, *str.toCharArray().map { it.toString() }.toTypedArray(), END)
                 for (i in 0 until arr.size - 1) {
                     if (map[arr[i]] == null)
@@ -62,7 +62,6 @@ class LazyWordChain {
                     map[arr[i]]!! += arr[i+1]
                 }
             }
-            println("****************** Done processing")
             chain = WordChain(map)
         }
     }

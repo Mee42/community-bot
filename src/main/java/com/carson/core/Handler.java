@@ -26,26 +26,28 @@ public class Handler extends MessageHandler {
         Executors.newSingleThreadExecutor().execute(() -> {
             log(event);
 
+            if(!event.getAuthor().isBot()) {
+                final MongoCollection<Document> coll = getMessageDB();
+                Document doc = new Document()
+                        .append("_id", event.getMessageID())
+                        .append(Context.USER.getDatabaseName(), event.getAuthor().getLongID())
+                        .append(Context.CHANNEL.getDatabaseName(), event.getChannel().getLongID())
+                        .append("content", event.getMessage().getContent());
+                if (!event.getChannel().isPrivate()) {
+                    doc.append(Context.GUILD.getDatabaseName(), event.getGuild().getLongID());
+                }
+                System.out.println("inserting doc into db");
 
-            final MongoCollection<Document> coll = getMessageDB();
-            Document doc = new Document()
-                    .append("_id",event.getMessageID())
-                    .append(Context.USER.getDatabaseName(),event.getAuthor().getLongID())
-                    .append(Context.CHANNEL.getDatabaseName(),event.getChannel().getLongID())
-                    .append("content",event.getMessage().getContent());
-            if(!event.getChannel().isPrivate()){
-                doc.append(Context.GUILD.getDatabaseName(),event.getGuild().getLongID() );
-            }
-            System.out.println("inserting doc into db");
-            coll.insertOne(doc);
-            //push the message to be processed
-            ChainStack.Companion.push(event);
+                coll.insertOne(doc);
+                //push the message to be processed
+                ChainStack.Companion.push(event);
 
-            for (Command command : commands) {
+                for (Command command : commands) {
 //                System.out.println("Testing command (" + command.toString() + ")");
-                if (command.test(event)) {
-                    System.out.println("running command (" + command.toString() + ")");
-                    command.run(event);
+                    if (command.test(event)) {
+                        System.out.println("running command (" + command.toString() + ")");
+                        command.run(event);
+                    }
                 }
             }
         });
