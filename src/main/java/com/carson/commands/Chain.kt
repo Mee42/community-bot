@@ -7,6 +7,9 @@ class Chain{
     private val map :MutableMap<String,MutableList<String>> = mutableMapOf()
     /** feeds another message into the chain */
     fun feed(input: String) {
+        if(input.startsWith("!"))return
+        if(input.contains(START) || input.contains(END))return
+        if(input.isBlank())return
         val list :List<String> = parse(input)
         for(i in 1 until list.size){
             if(!map.containsKey(list[i-1]))
