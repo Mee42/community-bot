@@ -11,6 +11,7 @@ import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters
 import com.vdurmont.emoji.EmojiManager
 import org.bson.Document
+import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent
@@ -263,14 +264,7 @@ class ChainCommands : KotlinCommandCollection("Carson") {
     /*  <@293853365891235841> */
     //  012345678901234567890
     private fun sendChainMessage(chain :Chain, event :MessageReceivedEvent){
-        val content = chain.generateSentance()
-        for(i in 0 until content.length - ("<@>".length + 18)){
-            val sub = content.substring(i)
-            if(sub[0] != '<' || sub[1] != '@')continue
-            val id = sub.substring(2,20).toLongOrNull() ?: sub.substring(2,19).toLongOrNull() ?: continue//2,19 to support 17-char long id's
-            val user = event.client.fetchUser(id)
-            content.replace("<@$id>","${user.name}#${user.discriminator}")//maybe this will fail? maybe not
-        }
+        val content = parse(chain.generateSentance().replace("```","\\```")) { id -> event.client.fetchUser(id).name +"#" + event.client.fetchUser(id).discriminator}
         val message  = RequestBuffer.request(RequestBuffer.IRequest { event.channel.sendMessage("`\$ID_GOES_HERE`  Here's your phrase: ```\n$content```") }).get()
         val messageContent = message.content.replace("\$ID_GOES_HERE",message.longID.toString())
         RequestBuffer.request { message.edit(messageContent) }
@@ -278,6 +272,24 @@ class ChainCommands : KotlinCommandCollection("Carson") {
         RequestBuffer.request { message.addReaction(EmojiManager.getForAlias("thumbsup")) }.get()
         RequestBuffer.request {  message.addReaction(EmojiManager.getForAlias("thumbsdown")) }.get()
     }
+
+}
+
+fun parse(contentX :String,namer : (Long) -> String):String{
+    var content = contentX
+    for(i in 0 until content.length - ("<@>".length + 17)){
+        val sub = content.substring(i)
+        if(sub[0] != '<' || sub[1] != '@')continue
+        val ad = if(sub[2] == '!') 3 else 2
+
+        println("sub:" + sub.substring(ad,ad + 18) + ":" + sub.substring(ad,ad + 17))
+        val id = sub.substring(ad,ad + 18).toLongOrNull() ?: sub.substring(ad,ad + 17).toLongOrNull() ?: continue
+        content = content.replace("<@${if(ad==3) "!" else ""}$id>",namer(id))//maybe this will fail? maybe not
+    }
+    return content
+}
+fun main(args: Array<String>) {
+    println(parse("<@!293853365891235841>") { "Carson#1234" })
 
 }
 
