@@ -259,8 +259,18 @@ class ChainCommands : KotlinCommandCollection("Carson") {
 
     }
 
+
+    /*  <@293853365891235841> */
+    //  012345678901234567890
     private fun sendChainMessage(chain :Chain, event :MessageReceivedEvent){
         val content = chain.generateSentance()
+        for(i in 0 until content.length - ("<@>".length + 18)){
+            val sub = content.substring(i)
+            if(sub[0] != '<' || sub[1] != '@')continue
+            val id = sub.substring(2,20).toLongOrNull() ?: sub.substring(2,19).toLongOrNull() ?: continue//2,19 to support 17-char long id's
+            val user = event.client.fetchUser(id)
+            content.replace("<@$id>","${user.name}#${user.discriminator}")//maybe this will fail? maybe not
+        }
         val message  = RequestBuffer.request(RequestBuffer.IRequest { event.channel.sendMessage("`\$ID_GOES_HERE`  Here's your phrase: ```\n$content```") }).get()
         val messageContent = message.content.replace("\$ID_GOES_HERE",message.longID.toString())
         RequestBuffer.request { message.edit(messageContent) }
@@ -310,12 +320,9 @@ class EmojiHandler{
 
 val client :MongoClient = MongoClient("192.168.1.203:27017")
 val db :MongoDatabase = client.getDatabase("carson-bot")
-fun getMessageCollection() :MongoCollection<Document>{
-    return db.getCollection("messages")
-}
-fun getBotMessageCollection() :MongoCollection<Document>{
-    return db.getCollection("bot-messages")
-}
+fun getMessageCollection() :MongoCollection<Document> = db.getCollection("messages")
+
+fun getBotMessageCollection() :MongoCollection<Document> = db.getCollection("bot-messages")
 
 class ChainCache{companion object{
     private val guilds = mutableMapOf<Long,Chain>()
