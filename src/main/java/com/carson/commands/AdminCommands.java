@@ -10,6 +10,7 @@ import sx.blah.discord.handle.obj.IUser;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 
 public class AdminCommands extends CommandCollection {
     public AdminCommands(){
@@ -44,7 +45,8 @@ public class AdminCommands extends CommandCollection {
             handler.sendMessage(event, "uptime: `" +
                     (System.currentTimeMillis() - startTime)/1000 + "` Seconds, `" +
                     (System.currentTimeMillis() - startTime)/60_000/60 + "` Hours\n" +
-                    "Guilds: `" + event.getClient().getGuilds().size() + "`\n" +
+                    "Guild Count: `" + event.getClient().getGuilds().size() + "`\n" +
+                    "Guilds: `" + Arrays.toString(event.getClient().getGuilds().stream().map(IGuild::getName).toArray()) + "`\n" +
                     "Users in this Guild: `" + event.getGuild().getTotalMemberCount() + "`\n" +
                     "Users under this bot: `" + userCount + "`\n" +
                     "Server Uptime: `" + uptime + "`");

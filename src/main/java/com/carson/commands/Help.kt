@@ -19,23 +19,22 @@ package com.carson.commands
 val STR = """
 help|(command name)|Get the help menu|Gets the general help menu, if (command name) is specified this will get the help menu for that command
 ***
-helpraw||Raw json help menu|Returns all infomation about the commands in JSON format. ⚠Mainly for testing⚠
+helpraw||Raw json help menu|Returns all information about the commands in JSON format. ⚠Mainly for testing⚠
 ***
 poll|[question]&&<&:&>&&[answers]|Create a poll|
-Create a poll with different options. Question must be seperated from the answers with a `&`,and answers must be split up with a `|` character
+Create a poll with different options. Question must be separated from the answers with a `&`,and answers must be split up with a `|` character
 ***
 invite||get an invite link|Get an invite link
 ***
 contribute||get info on how to contribute|get info on how to contribute
-***
-mc||hahahaha|change everyone's nickname so it starts with Mc. Has an approval stage, just running the command won't change anything until an admin approves
 ***
 ping||test the ping|test how long it takes for a message to be sent with the bot, in milliseconds
 ***
 status||get the bot status|Gets bot uptime, server uptime, guild count, user count, ect
 ***
 chain||generate a Markov chain based on arguments|use the command without arguments for more information
-
+***
+save|[id]|save the id of a !chain message.
 
 """.trimIndent().replace("\n","")
 

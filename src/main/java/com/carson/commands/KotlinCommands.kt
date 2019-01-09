@@ -88,9 +88,8 @@ class KotlinCommands : CommandCollection("Carson") {
 
             val reactionEvent = it.client.dispatcher.waitFor(Predicate<ReactionAddEvent> { mes ->
                 return@Predicate mes.messageID == message.longID &&
-                        mes.user != it.client.ourUser
-                        && ( mes.author.getPermissionsForGuild(mes.guild).any { itt -> itt == Permissions.ADMINISTRATOR } ||
-                             mes.guild.owner == mes.author)
+                        mes.user != it.client.ourUser &&
+                        ( mes.author.getPermissionsForGuild(mes.guild).any { itt -> itt == Permissions.ADMINISTRATOR } || mes.guild.owner == mes.author)
             })
             handle.sendMessageAndGet(it.channel,reactionEvent.user.mention() + " has approved changes. Making changes now")
             users.forEach {itt ->

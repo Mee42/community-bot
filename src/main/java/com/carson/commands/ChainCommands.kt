@@ -1,9 +1,6 @@
 package com.carson.commands
 
-import com.carson.core.Command
-import com.carson.core.Handler
-import com.carson.core.KotlinCommandCollection
-import com.carson.core.Main
+import com.carson.core.*
 import com.carson.core.Main.PREFIX
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
@@ -19,6 +16,10 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionRemoveEvent
 import sx.blah.discord.util.RequestBuffer
 import java.lang.NumberFormatException
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
@@ -288,10 +289,7 @@ fun parse(contentX :String,namer : (Long) -> String):String{
     }
     return content
 }
-fun main(args: Array<String>) {
-    println(parse("<@!293853365891235841>") { "Carson#1234" })
 
-}
 
 const val upvotes = "upvotes"
 const val downvotes = "downvotes"
