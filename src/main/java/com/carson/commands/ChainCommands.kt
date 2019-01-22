@@ -8,7 +8,6 @@ import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters
 import com.vdurmont.emoji.EmojiManager
 import org.bson.Document
-import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent
@@ -16,10 +15,6 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionRemoveEvent
 import sx.blah.discord.util.RequestBuffer
 import java.lang.NumberFormatException
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
-import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
@@ -265,7 +260,7 @@ class ChainCommands : KotlinCommandCollection("Carson") {
     /*  <@293853365891235841> */
     //  012345678901234567890
     private fun sendChainMessage(chain :Chain, event :MessageReceivedEvent){
-        val content = parse(chain.generateSentance().replace("```","\\```")) { id -> event.client.fetchUser(id).name +"#" + event.client.fetchUser(id).discriminator}
+        val content = parse(chain.generateSentenceChecked().replace("```","\\```")) { id -> event.client.fetchUser(id).name +"#" + event.client.fetchUser(id).discriminator}
         val message  = RequestBuffer.request(RequestBuffer.IRequest { event.channel.sendMessage("`\$ID_GOES_HERE`  Here's your phrase: ```\n$content```") }).get()
         val messageContent = message.content.replace("\$ID_GOES_HERE",message.longID.toString())
         RequestBuffer.request { message.edit(messageContent) }

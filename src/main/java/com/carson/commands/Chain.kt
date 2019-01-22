@@ -20,7 +20,21 @@ class Chain{
 
     private fun parse(input: String): List<String> = ("$START $input $END").split(" ").filter { it.isNotBlank() }
 
-    fun generateSentance() :String{
+
+    fun generateSentenceChecked() :String{
+        while(true){
+            val str = generateSentence()
+            val split = str.split(" ")
+            if(str.toCharArray().count { it == ' '} < 2) continue
+            if(str[0] == ':' && str[str.length - 1] == ':') continue //if it's an emoji
+            if(split.distinct().size < split.size / 2) continue //if more then half the words are duplicates
+            if(split.count { it[0] == ':' && it[it.length - 1] == ':' } > split.size - 2) continue //if less than two words are real words
+            if(split.count { it.length == 1 } > split.size - 2) continue //if the count of single-letter words makes up length-2 of the sentence
+            return str
+        }
+    }
+
+    private fun generateSentence() :String{
         val str = mutableListOf<String>()
         str+= START
         while(!str.isEmpty() && str.last() != END){
@@ -29,8 +43,9 @@ class Chain{
                 str+= END
                 break
             }
-            val rand = (Math.random() * map[mapPos]!!.size).toInt()
-            str+=map[mapPos]!![rand]
+            //hopefully makes longer sentences
+            str+= (if(str.size <= 2) map[mapPos]!!.filter { it != END } else map[mapPos]!!).random() ?: END
+
         }
         str.removeIf { it == END || it == START }
         return str.fold("") {fold,one -> "$fold $one"}.trim()
@@ -44,3 +59,5 @@ class Chain{
         return b.toString()
     }
 }
+
+fun <T> List<T>.random() :T? = if(size == 0) null else this[(Math.random()*size).toInt()]
