@@ -22,16 +22,13 @@ class Chain{
 
 
     fun generateSentenceChecked() :String{
-        while(true){
-            val str = generateSentence()
-            val split = str.split(" ")
-            if(str.toCharArray().count { it == ' '} < 2) continue
-            if(str[0] == ':' && str[str.length - 1] == ':') continue //if it's an emoji
-            if(split.distinct().size < split.size / 2) continue //if more then half the words are duplicates
-            if(split.count { it[0] == ':' && it[it.length - 1] == ':' } > split.size - 2) continue //if less than two words are real words
-            if(split.count { it.length == 1 } > split.size - 2) continue //if the count of single-letter words makes up length-2 of the sentence
-            return str
-        }
+        var str :String
+        var i = 0//forever blocking calls won't block forever
+        do{
+            i++
+            str = generateSentence()
+        }while(i < 100 && !isSentenceValid(str))
+        return str
     }
 
     private fun generateSentence() :String{
@@ -58,6 +55,30 @@ class Chain{
         }
         return b.toString()
     }
+
+    fun getMap(): MutableMap<String, MutableList<String>> {
+        val map :MutableMap<String,MutableList<String>> = mutableMapOf()
+        map.putAll(this.map.map { Pair(it.key,it.value.map { w -> w }.toMutableList()) })
+        return map
+    }
+
+
 }
 
 fun <T> List<T>.random() :T? = if(size == 0) null else this[(Math.random()*size).toInt()]
+
+
+const val VALID = "!VALID!"
+fun isSentenceValid(str :String):Boolean = isSentenceValidString(str) == VALID
+
+fun isSentenceValidString(str :String) :String{
+    val split = str.split(" ").map { it.trim() }
+//    var i = 0
+//    split.forEach { println("${i++} : \"${it.replace("\n","\\n")}\"") }
+    if(str.toCharArray().count { it == ' '} < 2) return "Too little words"
+    if(split.distinct().size <= split.size / 2) return "Too many duplicates" //if more then half the words are duplicates
+    if(split.count { it[0] == ':' && it[it.length - 1] == ':' } > split.size - 2) return "Too many emojis" //if less than two words are real words
+    if(split.count { it.length == 1 } > split.size - 2) return "Too many one-letter words" //if the count of single-letter words makes up length-2 of the sentence
+    if(str.contains("`"))return "Can't include backticks"
+    return VALID
+}

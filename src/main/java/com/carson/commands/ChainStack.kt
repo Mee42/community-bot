@@ -56,7 +56,7 @@ class ChainStack{
         val chain = Chain()
         found.forEach {
             if(it["content"] != null)
-                if(!it.get("content",String::class.java).startsWith("!chain"))
+                if(!it.get("content",String::class.java).startsWith("!"))
                     chain.feed(it.get("content",String::class.java))
         }
         when(context){

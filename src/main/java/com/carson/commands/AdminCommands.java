@@ -46,7 +46,6 @@ public class AdminCommands extends CommandCollection {
                     (System.currentTimeMillis() - startTime)/1000 + "` Seconds, `" +
                     (System.currentTimeMillis() - startTime)/60_000/60 + "` Hours\n" +
                     "Guild Count: `" + event.getClient().getGuilds().size() + "`\n" +
-                    "Guilds: `" + Arrays.toString(event.getClient().getGuilds().stream().map(IGuild::getName).toArray()) + "`\n" +
                     "Users in this Guild: `" + event.getGuild().getTotalMemberCount() + "`\n" +
                     "Users under this bot: `" + userCount + "`\n" +
                     "Server Uptime: `" + uptime + "`");
@@ -61,8 +60,11 @@ public class AdminCommands extends CommandCollection {
         File f = new File("/tmp/test" + UUID.randomUUID() + ".txt");
         ProcessBuilder pb = new ProcessBuilder("bash","-c","~/bin/up > " + f.getAbsolutePath());
         pb.inheritIO();
+
         final Process start = pb.start();
         start.waitFor();
+        System.out.println(f.getAbsolutePath());
+        System.exit(0);
         BufferedReader b = new BufferedReader(new FileReader(f));
         String line;
         StringBuilder in = new StringBuilder();
@@ -70,6 +72,10 @@ public class AdminCommands extends CommandCollection {
             in.append(line);
         }
         return in.toString();
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+
     }
 
 

@@ -65,7 +65,7 @@ class KotlinCommands : CommandCollection("Carson") {
             handle.sendMessage(it, "Hi, I'm <@500780039030308875>, a bot made to give people the ability to write" +
                     " Discord bots without having to host it or manage boilerplate. I'm written in java and mainly run by" +
                     " <@293853365891235841>, and contributing is really easy. Use !contribute to find out how!\n" +
-                    "Commands avalible are:```\ninvite\npoll\nping\nstatus\ncontribute\n```")
+                    "Commands avalible are:```\ninvite\nchain\nping\nstatus\ncontribute\n```")
         }))
 
         commands.add(toCommand(Test.startsWith("contribute"), CommandLambda {

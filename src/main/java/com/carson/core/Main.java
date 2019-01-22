@@ -15,6 +15,8 @@ public class Main {
         Utils.registerListener(client,handler);
         client.getDispatcher().registerListener(new EmojiHandler());
         client.login();
+        //after login run the init and pop the global chain
+        ChainStack.Companion.getSingleton();
     }
 
 
@@ -24,5 +26,6 @@ public class Main {
         collectionList.add(new KotlinCommands());
         collectionList.add(new ChainCommands());
         collectionList.add(new WordCommands());
+        collectionList.add(new TempCommands());
     }
 }

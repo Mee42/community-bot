@@ -285,7 +285,6 @@ fun parse(contentX :String,namer : (Long) -> String):String{
     return content
 }
 
-
 const val upvotes = "upvotes"
 const val downvotes = "downvotes"
 class EmojiHandler{
