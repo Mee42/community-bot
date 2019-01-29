@@ -15,6 +15,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionRemoveEvent
 import sx.blah.discord.util.RequestBuffer
 import java.lang.NumberFormatException
+import java.math.BigDecimal
 import kotlin.concurrent.thread
 
 
@@ -252,6 +253,39 @@ class ChainCommands : KotlinCommandCollection("Carson") {
             getBotMessageCollection().replaceOne(Filters.all("_id",id),doc)
         }
 
+
+        commands["asdf"] = command@ {event ->
+            val content = event.message.content.replace("!asdf","").trim()
+            val words = content.split(" ")
+            var string = ""
+            var back = START
+            var i = 0
+
+            val mutable = words.toMutableList()
+            mutable.add(END)
+            val totalChanceList = mutableListOf<Double>()
+            mutable.forEach{word ->
+                val map = ChainCache.global?.getMap()
+                if(map == null){
+                    RequestBuffer.request { event.channel.sendMessage("Impossible to generate!") }
+                    return@forEach
+                }
+                val list = map[back] ?: emptyList<String>()
+                var chance = list.count { word == it }.toDouble().times(100) / list.size.toDouble()
+                chance = if(chance.isNaN()) 0.0 else chance
+                totalChanceList+=chance.div(100)
+                string+= "word `$word`(${i++}) has a `$chance%` of coming after `$back`\n"
+                back = word
+            }
+            val total = totalChanceList.fold(1.0) {all,one ->one * all}
+            string+="Total chance: `${total.times(100)}%`\n"
+            if(!isSentenceValid(content)) {
+                string += "This sentence is bad(${isSentenceValidString(content)}), so the actually probability is around `"
+                string += BigDecimal.valueOf(total).pow(100).toString()
+                string += "%`"
+            }
+            RequestBuffer.request { event.channel.sendMessage(string) }
+        }
 
 
     }
