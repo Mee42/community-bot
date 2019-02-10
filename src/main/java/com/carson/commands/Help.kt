@@ -19,14 +19,7 @@ package com.carson.commands
 val STR = """
 help|(command name)|Get the help menu|Gets the general help menu, if (command name) is specified this will get the help menu for that command
 ***
-helpraw||Raw json help menu|Returns all information about the commands in JSON format. ⚠Mainly for testing⚠
-***
-poll|[question]&&<&:&>&&[answers]|Create a poll|
-Create a poll with different options. Question must be separated from the answers with a `&`,and answers must be split up with a `|` character
-***
 invite||get an invite link|Get an invite link
-***
-contribute||get info on how to contribute|get info on how to contribute
 ***
 ping||test the ping|test how long it takes for a message to be sent with the bot, in milliseconds
 ***
@@ -34,15 +27,18 @@ status||get the bot status|Gets bot uptime, server uptime, guild count, user cou
 ***
 chain||generate a Markov chain based on arguments|use the command without arguments for more information
 ***
-save|[id]|save the id of a !chain message.
-
+save|[id]|save the id of a chain-generated message|Saves the message to your ~saved list
+***
+asdf|[message]|test a message|Tests the possibility of message [message] occurring. Not very accurate
+***
+word||Generate a word|Generates a word using a nice Markov chain using the entirety of the english language
 """.trimIndent().replace("\n","")
 
 var HELP :List<Entry> = mutableListOf()
 get() {
     if(field.isNotEmpty())
         return field
-    var arr = mutableListOf<Entry>()
+    val arr = mutableListOf<Entry>()
     val strEntrys = STR.split("***").filter { !it.isEmpty() }
     for(strEntry in strEntrys){
         val entrySplit = strEntry.split("|", limit = 4)
@@ -51,7 +47,7 @@ get() {
         val short = entrySplit[2]
         val long = entrySplit[3]
 
-        var argumentList = mutableListOf<Argument>()
+        val argumentList = mutableListOf<Argument>()
         if(!argsStr.isEmpty()) {
             for (argStr in argsStr.split("&&")) {
                 val subString = argStr.substring(1, argStr.length - 1)

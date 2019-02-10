@@ -2,6 +2,9 @@ package com.carson.core
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 
+/**
+ * used to take advantage of kotlin's nice sintax
+ */
 abstract class KotlinCommandCollection(author :String) : CommandCollection(author) {
     override fun genCommands(commands: MutableList<Command>, handle: Handler) {
         val coms = mutableMapOf<String,(MessageReceivedEvent) -> Unit>()

@@ -8,11 +8,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.RequestBuffer;
 
 public abstract class MessageHandler {
-    private final IDiscordClient client;
 
-    public MessageHandler(IDiscordClient client){
-        this.client = client;
-    }
 
     @EventSubscriber
     public void onMessageRecivedEvent(MessageReceivedEvent event){

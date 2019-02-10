@@ -27,12 +27,8 @@ public class AdminCommands extends CommandCollection {
 
         commands.add(toCommand(Test.startsWith("status"), event -> {
             String uptime;
-            try {
-                uptime = "%" + uptime();
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-                uptime = "unknown";
-            }
+            uptime = "%" + uptime();
+
 
             List<IUser> users = new ArrayList<>();
             for(IGuild guild : event.getClient().getGuilds()){
@@ -55,28 +51,29 @@ public class AdminCommands extends CommandCollection {
     }
 
 
-    private static String uptime() throws IOException, InterruptedException {
+    private static String uptime() {
+        try {
 //        ProcessBuilder pb = new ProcessBuilder("bash","-c", "up");
-        File f = new File("/tmp/test" + UUID.randomUUID() + ".txt");
-        ProcessBuilder pb = new ProcessBuilder("bash","-c","~/bin/up > " + f.getAbsolutePath());
-        pb.inheritIO();
+            File f = new File("/tmp/test" + UUID.randomUUID() + ".txt");
+            ProcessBuilder pb = new ProcessBuilder("bash", "-c", "~/bin/up > " + f.getAbsolutePath());
+            pb.inheritIO();
 
-        final Process start = pb.start();
-        start.waitFor();
-        System.out.println(f.getAbsolutePath());
-        System.exit(0);
-        BufferedReader b = new BufferedReader(new FileReader(f));
-        String line;
-        StringBuilder in = new StringBuilder();
-        while ((line = b.readLine()) != null) {
-            in.append(line);
+            final Process start = pb.start();
+            start.waitFor();
+            System.out.println(f.getAbsolutePath());
+            BufferedReader b = new BufferedReader(new FileReader(f));
+            String line;
+            StringBuilder in = new StringBuilder();
+            while ((line = b.readLine()) != null) {
+                in.append(line);
+            }
+            return in.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+            return "unknown";
         }
-        return in.toString();
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-
-    }
 
 
 }

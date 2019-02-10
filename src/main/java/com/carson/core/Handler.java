@@ -16,8 +16,7 @@ import java.util.concurrent.Executors;
 import static com.carson.commands.ChainCommandsKt.getMessageCollection;
 
 public class Handler extends MessageHandler {
-    public Handler(IDiscordClient client) {
-        super(client);
+    Handler() {
         init();
     }
 

@@ -4,15 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Utils {
     private static long timeStarted;
@@ -20,27 +15,11 @@ public class Utils {
         timeStarted = System.currentTimeMillis() / 1000;
     }
 
-    private static Gson gson;
+    public static final Gson gson;
     static{
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    public static String getGenericBotInfo(MessageReceivedEvent event){
-        String str = "";
-        long seconds = System.currentTimeMillis() / 1000 - timeStarted;
-        double hours = (seconds / (60d*60d));
-        str+="uptime:" + seconds + " seconds, " + hours + " hours\n";
-        List<IGuild> guilds = event.getClient().getGuilds();
-        str+="guilds:" + guilds.size() + "\n";
-        List<IUser> users = new ArrayList<>();
-        for(IGuild guild : guilds){
-            for(IUser user : guild.getUsers()){
-                if(!users.contains(user))users.add(user);
-            }
-        }
-        str+="users:" + users.size() + "\n";
-        return str;
-    }
 
 
     public static void registerListener(IDiscordClient client, MessageHandler handler){
@@ -59,12 +38,12 @@ public class Utils {
         return buildClient("key.txt");
     }
     public static String readToken(File file){
-        String token = "";
+        StringBuilder token = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
             while(line != null) {
-                token+=line;
+                token.append(line);
                 line = br.readLine();
             }
         }catch(Exception e) {
@@ -73,13 +52,10 @@ public class Utils {
             e.printStackTrace();
             System.exit(-1);
         }
-        token = token.replace("\n","");//tokens don't have newlines, but some text editors leave on at the end
-        return token;
+        token = new StringBuilder(token.toString().replace("\n", ""));//tokens don't have newlines, but some text editors leave on at the end
+        return token.toString();
     }
 
 
 
-    public static Gson getGson() {
-        return gson;
-    }
 }

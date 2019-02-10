@@ -52,8 +52,7 @@ class ChainCommands : KotlinCommandCollection("Carson") {
 
         commands["chain"] = command@ {event ->
             val content = event.message.content
-            val argument :String? =if(content == "!chain") null else content.replace("!chain","").trim()
-
+            val argument :String? =if(content == Main.PREFIX + "chain") null else content.replace(Main.PREFIX + "chain","").trim()
 
             var queryType: Context?
             var queryData :Long? = null
@@ -270,7 +269,7 @@ class ChainCommands : KotlinCommandCollection("Carson") {
                     RequestBuffer.request { event.channel.sendMessage("Impossible to generate!") }
                     return@forEach
                 }
-                val list = map[back] ?: emptyList<String>()
+                val list = map[back] ?: emptyList()
                 var chance = list.count { word == it }.toDouble().times(100) / list.size.toDouble()
                 chance = if(chance.isNaN()) 0.0 else chance
                 totalChanceList+=chance.div(100)
@@ -363,6 +362,8 @@ fun getMessageCollection() :MongoCollection<Document> = db.getCollection("messag
 fun getBotMessageCollection() :MongoCollection<Document> = db.getCollection("bot-messages")
 
 class ChainCache{companion object{
+    init {ChainStack}
+
     private val guilds = mutableMapOf<Long,Chain>()
     val guildSize
     get() = guilds.size
@@ -396,3 +397,12 @@ class ChainCache{companion object{
     var global :Chain? = null
 
 }}
+
+fun main(args: Array<String>) {
+    while(ChainCache.global == null){
+        Thread.sleep(100)
+    }
+    println(ChainCache.global!!.generateSentenceChecked())
+    println(ChainCache.global!!.getMap())
+}
+

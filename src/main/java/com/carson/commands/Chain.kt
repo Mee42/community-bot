@@ -1,5 +1,6 @@
 package com.carson.commands
 
+import com.carson.core.Main
 import java.lang.StringBuilder
 import java.util.*
 
@@ -8,9 +9,10 @@ class Chain{
     /** feeds another message into the chain */
     fun feed(input: String) {
         if(input.startsWith("!"))return
+        if(input.startsWith(Main.PREFIX))return
         if(input.contains(START) || input.contains(END))return
         if(input.isBlank())return
-        val list :List<String> = parse(input)
+        val list :List<String> = ("$START $input $END").split(" ").filter { it.isNotBlank() }
         for(i in 1 until list.size){
             if(!map.containsKey(list[i-1]))
                 map[list[i-1]] = mutableListOf()
@@ -18,7 +20,6 @@ class Chain{
         }
     }
 
-    private fun parse(input: String): List<String> = ("$START $input $END").split(" ").filter { it.isNotBlank() }
 
 
     fun generateSentenceChecked() :String{
@@ -56,10 +57,14 @@ class Chain{
         return b.toString()
     }
 
-    fun getMap(): MutableMap<String, MutableList<String>> {
-        val map :MutableMap<String,MutableList<String>> = mutableMapOf()
-        map.putAll(this.map.map { Pair(it.key,it.value.map { w -> w }.toMutableList()) })
-        return map
+    /**
+     * This returns a copy of the map and is therefore extremely slow.
+     * Use only if needed
+     */
+    fun getMap(): Map<String, List<String>> {
+        val map :MutableMap<String,List<String>> = mutableMapOf()
+        map.putAll(this.map.map { Pair(it.key,it.value.map { w -> w }) })
+        return map.toMap()
     }
 
 

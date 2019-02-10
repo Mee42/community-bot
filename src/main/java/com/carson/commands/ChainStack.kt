@@ -1,5 +1,6 @@
 package com.carson.commands
 
+import com.carson.core.Main
 import com.mongodb.client.model.Filters
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import java.util.*
@@ -10,22 +11,22 @@ class ChainStack{
         public val singleton = ChainStack()
         init {
             push(Context.GLOBAL,-1)
-            val executer = Executors.newFixedThreadPool(2)
-            executer.execute {
+            val executor = Executors.newFixedThreadPool(2)
+            executor.execute {
                 while(singleton.run){
                     singleton.popEvent()
                     Thread.sleep(10)
                 }
             }
-            executer.execute {
+            executor.execute {
                 while(singleton.run){
                     singleton.popChain()
                     Thread.sleep(100)
                 }
             }
         }
-        public fun push(event : MessageReceivedEvent) = singleton.push(event)
-        public fun push(context : Context, id :Long) = singleton.push(Pair(context,id))
+        fun push(event : MessageReceivedEvent) = singleton.push(event)
+        fun push(context : Context, id :Long) = singleton.push(Pair(context,id))
     }
     private var run = true
     private val messageStack = Stack<MessageReceivedEvent>()
@@ -54,9 +55,12 @@ class ChainStack{
             else -> getMessageCollection().find(Filters.all(context.databaseName, id))
         }
         val chain = Chain()
+
+        fun String.test(r :(String) -> Boolean) = r(this)
+
         found.forEach {
             if(it["content"] != null)
-                if(!it.get("content",String::class.java).startsWith("!"))
+                if(!it.get("content",String::class.java).test { str -> str.startsWith("!") || str.startsWith(Main.PREFIX)})
                     chain.feed(it.get("content",String::class.java))
         }
         when(context){

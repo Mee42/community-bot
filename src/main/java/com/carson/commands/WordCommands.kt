@@ -31,8 +31,8 @@ class WordChain(private val map: Map<String, List<String>>) {
         val list = mutableListOf<String>()
         list+=START
         while(list.last() != END){
-            val random = (Math.random() * map[list.last()]!!.size).toInt()
-            list+=map[list.last()]!![random]
+            val random = (Math.random() * map.getValue(list.last()).size).toInt()
+            list+=map.getValue(list.last())[random]
         }
         return list.filter { it != START && it != END }.fold(StringBuilder()) { q, w->q.append(w)}.toString()
     }
