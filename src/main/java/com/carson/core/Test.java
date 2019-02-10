@@ -5,6 +5,6 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 public interface Test {
     boolean test(MessageReceivedEvent event);
     static Test startsWith(final String str){
-        return (event) -> event.getMessage().getContent().startsWith(Main.PREFIX + str);
+        return (event) -> event.getMessage().getContent().startsWith(Main.PREFIX + str) || event.getMessage().getContent().startsWith("!" + str);
     }
 }
